@@ -12,6 +12,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string_view>
+#include <utility>
 
 using namespace std::literals;
 
@@ -19,7 +20,6 @@ using namespace std::literals;
         (std::cerr << #X << '\n' << \
         "size = "sv << sizeof(X) << '\t' << \
         "align = "sv << alignof(X) << '\n') 
-
 
 
 int main() {
@@ -39,6 +39,8 @@ int main() {
     const auto SOURCE_FILE = DATA_DIRECTORY / "data.dat"_p;
 
     catalogue::file_handler::DatabaseHandler database(SOURCE_FILE);
+    
+    std::cout << std::boolalpha << database.IsEmpty() << '\n';
 
     std::cout << "Success!"sv;
     

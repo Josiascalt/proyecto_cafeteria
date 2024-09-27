@@ -131,7 +131,6 @@ namespace catalogue {
         class Student final : public PersonPathProps<Student> , public UserPathProps<Student> {
 
         };
-        
          
     } // namespace domain
 } // namespace catalogue
