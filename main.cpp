@@ -40,7 +40,7 @@ int main() {
 
     catalogue::file_handler::DatabaseHandler database(SOURCE_FILE);
 
-    std::cout << "Success!"sv;
+    //std::cout << "Success!"sv;
     
     return 0;
 }
