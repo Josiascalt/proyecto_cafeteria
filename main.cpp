@@ -35,7 +35,7 @@ int main() {
     const auto SOURCE_FILE = DATA_DIRECTORY / "data.dat"_p;
 
     catalogue::file_handler::DatabaseHandler database(SOURCE_FILE);
-    std::cout << std::boolalpha << database.IsEmpty() << '\n';
+    //std::cout << std::boolalpha << database.IsEmpty() << '\n';
     std::cout << "Success!"sv;
     
     return 0;
