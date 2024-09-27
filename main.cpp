@@ -40,7 +40,6 @@ int main() {
 
     catalogue::file_handler::DatabaseHandler database(SOURCE_FILE);
 
-    std::cout << std::boolalpha << database.IsEmpty() << '\n';
     std::cout << "Success!"sv;
     
     return 0;
