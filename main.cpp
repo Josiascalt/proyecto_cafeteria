@@ -1,9 +1,12 @@
 #include "domain.hpp"
-#include "users_catalogue.hpp"
 #include "domain.cpp"
+#include "users_catalogue.hpp"
 #include "users_catalogue.cpp"
-#include "path_handler.hpp"
 #include "file_handler.hpp"
+#include "file_handler.cpp"
+#include "path_handler.hpp"
+
+
 #include "testing.hpp"
 
 #include <iostream>
@@ -27,15 +30,17 @@ int main() {
     testing::user_catalogue::TestAddUser();
     //testing::user_catalogue::TestGetUsersByGroup();
 
-    const auto ROOT_PATH = std::filesystem::current_path() /  "Documents"_p / "Repositories"_p / "output"_p;
+    const auto ROOT_PATH = std::filesystem::current_path();
+    const auto TEMP_DIRECTORY = path_handler::ValidateDirectoryPath(ROOT_PATH / "MyOutput"_p);
     //Directories
-    const auto RECORD_DIRECTORY = path_handler::ValidateDirectoryPath(ROOT_PATH / "Records"_p);
-    const auto DATA_DIRECTORY = path_handler::ValidateDirectoryPath(ROOT_PATH / "Data"_p);
+    const auto RECORD_DIRECTORY = path_handler::ValidateDirectoryPath(TEMP_DIRECTORY / "Records"_p);
+    const auto DATA_DIRECTORY = path_handler::ValidateDirectoryPath(TEMP_DIRECTORY / "Data"_p);
     //Files
     const auto SOURCE_FILE = DATA_DIRECTORY / "data.dat"_p;
 
     catalogue::file_handler::DatabaseHandler database(SOURCE_FILE);
-    //std::cout << std::boolalpha << database.IsEmpty() << '\n';
+
+    std::cout << std::boolalpha << database.IsEmpty() << '\n';
     std::cout << "Success!"sv;
     
     return 0;

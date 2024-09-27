@@ -1,3 +1,5 @@
+#pragma once
+
 #include "domain.hpp"
 
 #include <fstream>
@@ -15,16 +17,9 @@ namespace catalogue {
         //template <typename Type>
         class DatabaseHandler {
         public:
-            DatabaseHandler(const std::filesystem::path& path)
-            : database_(std::fstream{path, std::ios::out | std::ios::in 
-                                         | std::ios::binary 
-                                         | std::ios::app | std::ios::ate})
-            {
-            }
+            DatabaseHandler(const std::filesystem::path& path);
 
-            bool IsEmpty() {
-                return database_ ? database_.tellg() == 0 : false;
-            }
+            bool IsEmpty();
 
             //void Read(Type& target);
             //void Write(const Type& );

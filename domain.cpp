@@ -17,7 +17,7 @@ namespace catalogue {
         
         using namespace type_naming;
 
-        //class Group function member definition
+        //class Group member functions definition
         bool Group::IsInitialized() const {
             return !std::holds_alternative<std::monostate>(*this);
         }
