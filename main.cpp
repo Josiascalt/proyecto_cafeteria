@@ -7,7 +7,7 @@
 #include "testing.hpp"
 
 #include <iostream>
-#include <cassert>
+#include <iomanip>
 #include <string_view>
 
 using namespace std::literals;
@@ -27,16 +27,15 @@ int main() {
     testing::user_catalogue::TestAddUser();
     //testing::user_catalogue::TestGetUsersByGroup();
 
-    std::cout << "The current path is " << std::filesystem::current_path() << '\n';
-
-    const auto ROOT_PATH = std::filesystem::current_path();
+    const auto ROOT_PATH = std::filesystem::current_path() /  "Documents"_p / "Repositories"_p / "output"_p;
     //Directories
     const auto RECORD_DIRECTORY = path_handler::ValidateDirectoryPath(ROOT_PATH / "Records"_p);
     const auto DATA_DIRECTORY = path_handler::ValidateDirectoryPath(ROOT_PATH / "Data"_p);
     //Files
     const auto SOURCE_FILE = DATA_DIRECTORY / "data.dat"_p;
 
-    catalogue::file_handler::DatabaseHandler database(DATA_DIRECTORY);
+    catalogue::file_handler::DatabaseHandler database(SOURCE_FILE);
+    std::cout << std::boolalpha << database.IsEmpty() << '\n';
     std::cout << "Success!"sv;
     
     return 0;

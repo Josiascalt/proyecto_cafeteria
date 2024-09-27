@@ -16,9 +16,14 @@ namespace catalogue {
         class DatabaseHandler {
         public:
             DatabaseHandler(const std::filesystem::path& path)
-            : database_(std::fstream{path, std::ios::out | std::ios::in | std::ios::binary | std::ios::app})
+            : database_(std::fstream{path, std::ios::out | std::ios::in 
+                                         | std::ios::binary 
+                                         | std::ios::app | std::ios::ate})
             {
-                std::cout << (database_ ? "true" : "false") << '\n';
+            }
+
+            bool IsEmpty() {
+                return database_ ? database_.tellg() == 0 : false;
             }
 
             //void Read(Type& target);

@@ -16,17 +16,30 @@ namespace path_handler {
 
     namespace fs = std::filesystem;
 
-    inline static fs::path ValidateDirectoryPath(const fs::path p) {
+    inline static fs::path ValidateDirectoryPath(fs::path&& p) {
         auto path = std::move(p);
 
         if (fs::create_directory(path)) {
             std::cout << "A new directory was succesfully created\n"s;
         } else {
-            std::cout << "The path: " << path << " already exists.\n"s;
+            std::cout << "The path: "s << path << " already exists.\n"s;
         }
 
         return path;
     }
+
+    /*inline static fs::path ValidateFilePath(fs::path&& p) {
+        auto path = std::move(p);
+
+        if (!fs::exists(path)) {
+            std::cout << "The path: "s << path << " aready exists.\n"s;
+        } else {
+            std::ofstream new_file(path);
+            std::cout << (new_file ? "A new file was successfully created"s : "Error while creating a file"s) << '\n';
+        }
+
+        return path;
+    }*/
     
 
     
