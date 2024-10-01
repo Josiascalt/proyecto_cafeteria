@@ -15,7 +15,7 @@ namespace catalogue {
             }
         } //namespace literals
         
-        using namespace type_naming;
+        using namespace components;
 
         //class Group member functions definition
         bool Group::IsInitialized() const {
@@ -23,49 +23,29 @@ namespace catalogue {
         }
 
         bool Group::IsTAC() const {
-            return std::holds_alternative<grouping::TAC>(*this);
+            return std::holds_alternative<groups::TAC>(*this);
         }
 
         bool Group::IsTAIS() const {
-            return std::holds_alternative<grouping::TAIS>(*this);
+            return std::holds_alternative<groups::TAIS>(*this);
         }
 
         bool Group::IsTAA() const {
-            return std::holds_alternative<grouping::TAA>(*this);
+            return std::holds_alternative<groups::TAA>(*this);
         }
 
-        grouping::TAC Group::GetAsTAC() const {
-            return std::get<grouping::TAC>(*this);
+        groups::TAC Group::GetAsTAC() const {
+            return std::get<groups::TAC>(*this);
         }
 
-        grouping::TAIS Group::GetAsTAIS() const {
-            return std::get<grouping::TAIS>(*this);
+        groups::TAIS Group::GetAsTAIS() const {
+            return std::get<groups::TAIS>(*this);
         }
 
-        grouping::TAA Group::GetAsTAA() const {
-            return std::get<grouping::TAA>(*this);
+        groups::TAA Group::GetAsTAA() const {
+            return std::get<groups::TAA>(*this);
         }
 
-        //class Person function member definition
-        const Name& Person::GetName() const {
-            return name_;
-        }
-        
-        const Gender Person::GetGender() const {
-            return gender_;
-        }
-        
-        //class User function member definition
-        const Group& User::GetGroup() const {
-            return group_;
-        }
-        
-        const Identifier& User::GetIdentifier() const {
-            return identifier_;
-        }
-
-        
-         
     } // namespace domain
 } // namespace catalogue
 

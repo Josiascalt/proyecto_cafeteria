@@ -9,28 +9,7 @@
 
 namespace catalogue {
     namespace domain {
-        class User;
-        namespace type_naming {
-            using Name = std::string;
-            using NameLink = std::string_view;
-            using Identifier = std::string;
-            using IdentifierLink = std::string_view;
-            using Index = int;
-            using UserPtr = std::shared_ptr<User>;
-        } //namespace type_naming
-
-        namespace literals {
-            std::filesystem::path operator""_p(const char* pathname, size_t size);
-        } //namespace literals
-        
-        using namespace type_naming;
-
-        enum class Gender : bool {
-            MALE,
-            FEMALE
-        };
-
-        namespace grouping {
+        namespace groups {
             enum class TAA : char {
                 MONOSTATE,
                 FIRST_GRADE,
@@ -55,72 +34,84 @@ namespace catalogue {
                 ELEVENTH_GRADE,
                 TWELFTH_GRADE
             };
-        };
-
-        class Group : public std::variant<std::monostate, grouping::TAC, grouping::TAIS, grouping::TAA> {
-        public:
-            using variant::variant;
-
-            bool IsInitialized() const;
-            bool IsTAC() const;
-            bool IsTAIS() const;
-            bool IsTAA() const;
-
-            grouping::TAC GetAsTAC() const;
-            grouping::TAIS GetAsTAIS() const;
-            grouping::TAA GetAsTAA() const;
-        };
+        }//namespace groups
         
-        class Person {
-        public: 
-            virtual const Name& GetName() const;
-            virtual const Gender GetGender() const;
-        protected:
-            Name name_;
-            Gender gender_;
+        /*
+            Every data members of every single class declared within the namespace "domain"
+            should be declared in the namespace "components", in order to keep all the basic types
+            in one place. This process makes easier the handling of types for storing them properly.
+        */
+        namespace components {
+            using Name = std::string;
+            using Identifier = std::string;
+            using Index = int;
 
+            enum class Gender : bool {
+                MALE,
+                FEMALE
+            };
+
+            struct Group : std::variant<std::monostate, groups::TAC, groups::TAIS, groups::TAA> {
+                using variant::variant;
+                
+                bool IsInitialized() const;
+                bool IsTAC() const;
+                bool IsTAIS() const;
+                bool IsTAA() const;
+                groups::TAC GetAsTAC() const;
+                groups::TAIS GetAsTAIS() const;
+                groups::TAA GetAsTAA() const;
+            };
+        } //namespace components
+
+        namespace literals {
+            std::filesystem::path operator""_p(const char* pathname, size_t size);
+        } //namespace literals
+        
+
+        using namespace components;
+
+        struct Person {
+            Name name;
+            Gender gender;
+        protected:
             virtual ~Person() = default;
         };
         
         
         template <typename Owner>
-        class PersonPathProps : public Person {
-        public:
-            Owner& SetName(Name name) {
-                name_ = name;
+        struct PersonPathProps : Person {
+            Owner& SetName(Name n) {
+                name = std::move(n);
                 return static_cast<Owner&>(*this);
             }
             
-            Owner& SetGender(Gender gender) {
-                gender_ = gender;
+            Owner& SetGender(Gender g) {
+                gender = g;
                 return static_cast<Owner&>(*this);
             }
+
         protected:
             virtual ~PersonPathProps() = default;
         };
         
-        class User {
-        public:
-            virtual const Group& GetGroup() const;
-            virtual const Identifier& GetIdentifier() const;
+        struct User {
+            Identifier identifier;
+            Group group;
         protected:
-            Identifier identifier_;
-            Group group_;
-            
             virtual ~User() = default;
         };
         
         template <typename Owner>
-        class UserPathProps : public User {
-        public:
-            Owner& SetIdentifier(Identifier identifier) {
-                identifier_ = std::move(identifier);
+        struct UserPathProps : User {
+            Owner& SetIdentifier(Identifier i) {
+                identifier = std::move(i);
                 return static_cast<Owner&>(*this);
             }
             
             template <typename GroupType>
             Owner& SetGroup(GroupType g) {
-                group_ = g;
+                group = g;
                 return static_cast<Owner&>(*this);
             }
             

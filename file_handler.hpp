@@ -11,7 +11,7 @@
 namespace catalogue {
     namespace file_handler {
         
-        using namespace domain::type_naming;
+        using namespace domain::components;
         using namespace domain::literals;
 
         
@@ -23,16 +23,16 @@ namespace catalogue {
 
             bool IsEmpty();
 
-            /*template <typename Type, typename Layout>
-            void Read(Type& target, Layout layout) {
+            /*template <typename Type>
+            void Read(Type& target) {
                 if (!this -> IsEmpty()) {
                     
                 }
             }*/
 
-            /*template <typename Type, typename Layout>
-            void Write(const Type& ) {
-
+            /*template <typename Type>
+            void Write(Type* ) {
+                if constexpr (Type == domain::Person)
             }*/
             
 
@@ -44,7 +44,7 @@ namespace catalogue {
 
         struct Entry {
             std::string time;
-            UserPtr user;
+            domain::User* user;
         };
 
         /*class RecordHandler {

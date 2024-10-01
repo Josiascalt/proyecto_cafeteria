@@ -11,7 +11,7 @@
 namespace catalogue {
     namespace file_handler {
         
-        using namespace domain::type_naming;
+        using namespace domain::components;
         using namespace domain::literals;
         
         

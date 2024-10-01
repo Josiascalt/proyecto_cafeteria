@@ -12,12 +12,12 @@
 namespace catalogue {
     namespace database {
 
-        using namespace domain::type_naming;
+        using namespace domain::components;
 
         class UserCatalogue {
         private:
-            using Users = std::deque<UserPtr>;
-            const UserPtr DUMMY = nullptr;
+            using Users = std::deque<domain::User*>;
+            const domain::User* DUMMY = nullptr;
         public:
             template<typename UserInterface>
             void AddUser(UserInterface user) {
@@ -25,14 +25,14 @@ namespace catalogue {
 
                 Index new_user_index = users_.size() - 1;
 
-                identifier_to_user_[users_[new_user_index] -> GetIdentifier()] = new_user_index;
+                identifier_to_user_[users_[new_user_index] -> identifier] = new_user_index;
             }
             
-            const UserPtr& GetUserByIdentifier(Identifier identifier) const noexcept;
+            const domain::User* GetUserByIdentifier(Identifier identifier) const noexcept;
 
         private:
             Users users_;
-            std::unordered_map<IdentifierLink, Index> identifier_to_user_;
+            std::unordered_map<std::string_view, Index> identifier_to_user_;
         };
     } //namespace database
 } //namespace catalogue

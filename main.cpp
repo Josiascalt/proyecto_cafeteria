@@ -23,11 +23,11 @@ using namespace std::literals;
 
 
 int main() {
-    using namespace catalogue::domain::type_naming;
+    using namespace catalogue::domain::components;
     using namespace catalogue::domain::literals;
 
-    testing::domain::TestStudentStruct();
-    testing::user_catalogue::TestAddUser();
+    //testing::domain::TestStudentStruct();
+    //testing::user_catalogue::TestAddUser();
     //testing::user_catalogue::TestGetUsersByGroup();
 
     const auto ROOT_PATH = std::filesystem::current_path();

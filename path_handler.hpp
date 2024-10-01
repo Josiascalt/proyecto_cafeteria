@@ -11,7 +11,7 @@
 
 namespace path_handler {
     using namespace std::literals;
-    using namespace catalogue::domain::type_naming;
+    using namespace catalogue::domain::components;
     using namespace catalogue::domain::literals;
 
     namespace fs = std::filesystem;
