@@ -13,7 +13,7 @@ namespace catalogue {
     namespace database {
         class UserCatalogue {
         private:
-            using UserPtr = std::shared_ptr<domain::User>;
+            using UserPtr = std::shared_ptr<domain::CompoundTypes::User>;
             using Users = std::deque<UserPtr>;
             using Index = int;
         public:

@@ -10,18 +10,24 @@
 
 namespace catalogue {
     namespace file_handler {
-
+        using namespace std::literals;
         using namespace domain::literals;
         
+        fs::path ValidateDirectoryPath(fs::path&& p) {
+            auto path = std::move(p);
+
+            if (fs::create_directory(path)) {
+                std::cout << "A new directory was succesfully created\n"s;
+            } else {
+                std::cout << "The path: "s << path << " already exists.\n"s;
+            }
+
+            return path;
+        }
         
         //class DatabaseHandler member functions definition
 
-        DatabaseHandler::DatabaseHandler(const std::filesystem::path& parent_directory)
-        : data_stream_(std::fstream{parent_directory, std::ios::out | std::ios::in 
-                                        | std::ios::binary 
-                                        | std::ios::app}) {
-
-
+        DatabaseHandler::DatabaseHandler(const DataPaths& paths) {
         }
     } //namespace file_handler
 } //namespace catalogue

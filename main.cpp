@@ -4,7 +4,6 @@
 #include "users_catalogue.cpp"
 #include "file_handler.hpp"
 #include "file_handler.cpp"
-#include "path_handler.hpp"
 
 
 #include "testing.hpp"
@@ -30,18 +29,24 @@ int main() {
     //testing::user_catalogue::TestGetUsersByGroup();
 
     const auto ROOT_PATH = std::filesystem::current_path();
-    const auto TEMP_DIRECTORY = path_handler::ValidateDirectoryPath(ROOT_PATH / "MyOutput"_p);
+    const auto TEMP_DIRECTORY = catalogue::file_handler::ValidateDirectoryPath(ROOT_PATH / "MyOutput"_p);
     //Directories
-    const auto RECORD_DIRECTORY = path_handler::ValidateDirectoryPath(TEMP_DIRECTORY / "Records"_p);
-    const auto DATA_DIRECTORY = path_handler::ValidateDirectoryPath(TEMP_DIRECTORY / "Data"_p);
-    //Files
-    const auto SOURCE_FILE = DATA_DIRECTORY / "data.dat"_p;
+    const auto RECORD_DIRECTORY = catalogue::file_handler::ValidateDirectoryPath(TEMP_DIRECTORY / "Records"_p);
+    const auto DATA_DIRECTORY = catalogue::file_handler::ValidateDirectoryPath(TEMP_DIRECTORY / "Data"_p);
+    
+    const auto DATA_FILES = catalogue::file_handler::DataPaths{}.SetNameData("nae.dat"_p)
+                                                                .SetIdentificatorData("idr.dat"_p)
+                                                                .SetGenderData("ger.dat"_p)
+                                                                .SetGroupData("grp"_p);
+    
+    catalogue::file_handler::DatabaseHandler database(DATA_FILES);
 
-    catalogue::file_handler::DatabaseHandler database(SOURCE_FILE);
 
-    SIZEOF(catalogue::domain::Person);
-    SIZEOF(catalogue::domain::User);
-    SIZEOF(catalogue::domain::Student);
+
+    SIZEOF(catalogue::domain::Components);
+    SIZEOF(catalogue::domain::CompoundTypes);
+    SIZEOF(catalogue::domain::CompoundTypes::User);
+    SIZEOF(catalogue::domain::CompoundTypes::Student);
     SIZEOF(std::fstream);
     SIZEOF(std::filesystem::path);
     

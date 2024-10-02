@@ -13,21 +13,21 @@ namespace testing {
     namespace domain {
 
         void TestStudentStruct() {
-            auto s1 = Student{}
+            auto s1 = CompoundTypes::Student{}
                     .SetGender(Components::Gender::MALE)
                     .SetName("AAA"s)
                     .SetIdentifier("111")
                     .SetGroup(groups::TAIS::SEVENTH_GRADE);
             
-            auto s2 = Student{}
+            auto s2 = CompoundTypes::Student{}
                     .SetGender(Components::Gender::FEMALE)
                     .SetName("BBB"s)
                     .SetGroup(groups::TAA::FIRST_GRADE)
                     .SetIdentifier("222"s);
 
-            auto s3 = Student{};
+            auto s3 = CompoundTypes::Student{};
 
-            auto s4 = Student{}
+            auto s4 = CompoundTypes::Student{}
                     .SetGender(Components::Gender::MALE)
                     .SetGroup(groups::TAA::FIRST_GRADE);
 
@@ -77,16 +77,16 @@ namespace testing {
 
         void TestAddUser() {
             UserCatalogue catalogue;
-            catalogue.AddUser(Student{}.SetGender(Components::Gender::FEMALE).SetGroup(groups::TAA::FIRST_GRADE).SetIdentifier("1111"s).SetName("Liliana"s));
-            catalogue.AddUser(Student{}.SetGender(Components::Gender::MALE).SetGroup(groups::TAIS::NINTH_GRADE).SetIdentifier("2222"s).SetName("Victor"s));
-            catalogue.AddUser(Student{}.SetGender(Components::Gender::FEMALE).SetGroup(groups::TAC::THEOLOGY_DEPARTMENT).SetIdentifier("3333"s).SetName("Juan"s));
-            catalogue.AddUser(Student{}.SetGender(Components::Gender::FEMALE).SetGroup(groups::TAA::SECOND_GRADE).SetIdentifier("4444"s).SetName("Franco"s));
-            catalogue.AddUser(Student{}.SetGender(Components::Gender::MALE).SetGroup(groups::TAIS::ELEVENTH_GRADE).SetIdentifier("5555"s).SetName("Mateo"s));
-            catalogue.AddUser(Student{}.SetGender(Components::Gender::FEMALE).SetGroup(groups::TAC::BILINGUAL_BUSINESS_DEPARTMENT).SetIdentifier("6666"s).SetName("Lucas"s));
-            catalogue.AddUser(Student{}.SetGender(Components::Gender::FEMALE).SetGroup(groups::TAA::SECOND_GRADE).SetIdentifier("7777"s).SetName("Joaz"s));
-            catalogue.AddUser(Student{}.SetGender(Components::Gender::MALE).SetGroup(groups::TAIS::TENTH_GRADE).SetIdentifier("8888"s).SetName("Felipe"s));
-            catalogue.AddUser(Student{}.SetGender(Components::Gender::FEMALE).SetGroup(groups::TAC::MUSIC_DEPARTMENT).SetIdentifier("9999"s).SetName("Pedro"s));
-            catalogue.AddUser(Student{}.SetGender(Components::Gender::MALE).SetGroup(groups::TAIS::SEVENTH_GRADE).SetIdentifier("1000"s).SetName("Tere"s));
+            catalogue.AddUser(CompoundTypes::Student{}.SetGender(Components::Gender::FEMALE).SetGroup(groups::TAA::FIRST_GRADE).SetIdentifier("1111"s).SetName("Liliana"s));
+            catalogue.AddUser(CompoundTypes::Student{}.SetGender(Components::Gender::MALE).SetGroup(groups::TAIS::NINTH_GRADE).SetIdentifier("2222"s).SetName("Victor"s));
+            catalogue.AddUser(CompoundTypes::Student{}.SetGender(Components::Gender::FEMALE).SetGroup(groups::TAC::THEOLOGY_DEPARTMENT).SetIdentifier("3333"s).SetName("Juan"s));
+            catalogue.AddUser(CompoundTypes::Student{}.SetGender(Components::Gender::FEMALE).SetGroup(groups::TAA::SECOND_GRADE).SetIdentifier("4444"s).SetName("Franco"s));
+            catalogue.AddUser(CompoundTypes::Student{}.SetGender(Components::Gender::MALE).SetGroup(groups::TAIS::ELEVENTH_GRADE).SetIdentifier("5555"s).SetName("Mateo"s));
+            catalogue.AddUser(CompoundTypes::Student{}.SetGender(Components::Gender::FEMALE).SetGroup(groups::TAC::BILINGUAL_BUSINESS_DEPARTMENT).SetIdentifier("6666"s).SetName("Lucas"s));
+            catalogue.AddUser(CompoundTypes::Student{}.SetGender(Components::Gender::FEMALE).SetGroup(groups::TAA::SECOND_GRADE).SetIdentifier("7777"s).SetName("Joaz"s));
+            catalogue.AddUser(CompoundTypes::Student{}.SetGender(Components::Gender::MALE).SetGroup(groups::TAIS::TENTH_GRADE).SetIdentifier("8888"s).SetName("Felipe"s));
+            catalogue.AddUser(CompoundTypes::Student{}.SetGender(Components::Gender::FEMALE).SetGroup(groups::TAC::MUSIC_DEPARTMENT).SetIdentifier("9999"s).SetName("Pedro"s));
+            catalogue.AddUser(CompoundTypes::Student{}.SetGender(Components::Gender::MALE).SetGroup(groups::TAIS::SEVENTH_GRADE).SetIdentifier("1000"s).SetName("Tere"s));
             
             auto t1 = catalogue.GetUserByIdentifier("7777"s);
             auto t2 = catalogue.GetUserByIdentifier("1000"s);
@@ -94,7 +94,7 @@ namespace testing {
             auto t4 = catalogue.GetUserByIdentifier("4444"s);
             auto t5 = catalogue.GetUserByIdentifier("9999"s);
 
-            auto t1_casted = dynamic_cast<const Student*>(t1.get());
+            auto t1_casted = dynamic_cast<const CompoundTypes::Student*>(t1.get());
             assert(t1_casted &&
                    t1_casted -> gender == Components::Gender::FEMALE && 
                    t1_casted -> gender != Components::Gender::MALE && 
@@ -107,10 +107,10 @@ namespace testing {
                    t1_casted -> group.GetAsTAA() != groups::TAA::FIRST_GRADE &&
                    t1_casted -> name == "Joaz"s &&
                    t1_casted -> name != "Jooaz"s);
-            assert(dynamic_cast<const Student*>(t2.get()));
-            assert(dynamic_cast<const Student*>(t3.get()));
-            assert(dynamic_cast<const Student*>(t4.get()));
-            assert(dynamic_cast<const Student*>(t5.get()));
+            assert(dynamic_cast<const CompoundTypes::Student*>(t2.get()));
+            assert(dynamic_cast<const CompoundTypes::Student*>(t3.get()));
+            assert(dynamic_cast<const CompoundTypes::Student*>(t4.get()));
+            assert(dynamic_cast<const CompoundTypes::Student*>(t5.get()));
 
 
             assert(t1 -> group.IsTAA());
@@ -122,16 +122,16 @@ namespace testing {
 
         /*void TestGetUsersByGroup() {
             UserCatalogue catalogue;
-            catalogue.AddUser(Student{}.SetGender(Components::Gender::FEMALE).SetGroup(groups::TAA::FIRST_GRADE).SetIdentifier(1111).SetName("Liliana"s));
-            catalogue.AddUser(Student{}.SetGender(Components::Gender::MALE).SetGroup(groups::TAIS::NINTH_GRADE).SetIdentifier(2222).SetName("Victor"s));
-            catalogue.AddUser(Student{}.SetGender(Components::Gender::FEMALE).SetGroup(groups::TAC::THEOLOGY_DEPARTMENT).SetIdentifier(3333).SetName("Juan"s));
-            catalogue.AddUser(Student{}.SetGender(Components::Gender::FEMALE).SetGroup(groups::TAA::SECOND_GRADE).SetIdentifier(4444).SetName("Franco"s));
-            catalogue.AddUser(Student{}.SetGender(Components::Gender::MALE).SetGroup(groups::TAIS::ELEVENTH_GRADE).SetIdentifier(5555).SetName("Mateo"s));
-            catalogue.AddUser(Student{}.SetGender(Components::Gender::FEMALE).SetGroup(groups::TAC::BILINGUAL_BUSINESS_DEPARTMENT).SetIdentifier(6666).SetName("Lucas"s));
-            catalogue.AddUser(Student{}.SetGender(Components::Gender::FEMALE).SetGroup(groups::TAA::SECOND_GRADE).SetIdentifier(7777).SetName("Joaz"s));
-            catalogue.AddUser(Student{}.SetGender(Components::Gender::MALE).SetGroup(groups::TAIS::TENTH_GRADE).SetIdentifier(8888).SetName("Felipe"s));
-            catalogue.AddUser(Student{}.SetGender(Components::Gender::FEMALE).SetGroup(groups::TAC::MUSIC_DEPARTMENT).SetIdentifier(9999).SetName("Pedro"s));
-            catalogue.AddUser(Student{}.SetGender(Components::Gender::MALE).SetGroup(groups::TAIS::SEVENTH_GRADE).SetIdentifier(1000).SetName("Tere"s));
+            catalogue.AddUser(CompoundTypes::Student{}.SetGender(Components::Gender::FEMALE).SetGroup(groups::TAA::FIRST_GRADE).SetIdentifier(1111).SetName("Liliana"s));
+            catalogue.AddUser(CompoundTypes::Student{}.SetGender(Components::Gender::MALE).SetGroup(groups::TAIS::NINTH_GRADE).SetIdentifier(2222).SetName("Victor"s));
+            catalogue.AddUser(CompoundTypes::Student{}.SetGender(Components::Gender::FEMALE).SetGroup(groups::TAC::THEOLOGY_DEPARTMENT).SetIdentifier(3333).SetName("Juan"s));
+            catalogue.AddUser(CompoundTypes::Student{}.SetGender(Components::Gender::FEMALE).SetGroup(groups::TAA::SECOND_GRADE).SetIdentifier(4444).SetName("Franco"s));
+            catalogue.AddUser(CompoundTypes::Student{}.SetGender(Components::Gender::MALE).SetGroup(groups::TAIS::ELEVENTH_GRADE).SetIdentifier(5555).SetName("Mateo"s));
+            catalogue.AddUser(CompoundTypes::Student{}.SetGender(Components::Gender::FEMALE).SetGroup(groups::TAC::BILINGUAL_BUSINESS_DEPARTMENT).SetIdentifier(6666).SetName("Lucas"s));
+            catalogue.AddUser(CompoundTypes::Student{}.SetGender(Components::Gender::FEMALE).SetGroup(groups::TAA::SECOND_GRADE).SetIdentifier(7777).SetName("Joaz"s));
+            catalogue.AddUser(CompoundTypes::Student{}.SetGender(Components::Gender::MALE).SetGroup(groups::TAIS::TENTH_GRADE).SetIdentifier(8888).SetName("Felipe"s));
+            catalogue.AddUser(CompoundTypes::Student{}.SetGender(Components::Gender::FEMALE).SetGroup(groups::TAC::MUSIC_DEPARTMENT).SetIdentifier(9999).SetName("Pedro"s));
+            catalogue.AddUser(CompoundTypes::Student{}.SetGender(Components::Gender::MALE).SetGroup(groups::TAIS::SEVENTH_GRADE).SetIdentifier(1000).SetName("Tere"s));
 
             auto t1 = catalogue.GetUserIdsByGroup(Group::TAA);
             auto t2 = catalogue.GetUserIdsByGroup(Group::TAIS);

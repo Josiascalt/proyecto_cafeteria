@@ -15,7 +15,24 @@ namespace catalogue {
             }
         } //namespace literals
 
-        //class Group member functions definition
+        //class Components member functions definition
+        bool Components::HasName() const {
+            return has_name_;
+        }
+
+        bool Components::HasIdentifier() const {
+            return has_identifier_;
+        }
+
+        bool Components::HasGender() const {
+            return has_gender_;
+        }
+
+        bool Components::HasGroup() const {
+            return has_group_;
+        }
+
+        //class Components::Group member functions definition
         bool Components::Group::IsInitialized() const {
             return !std::holds_alternative<std::monostate>(*this);
         }
