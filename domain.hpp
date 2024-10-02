@@ -36,11 +36,16 @@ namespace catalogue {
             };
         }//namespace groups
         
+
         /*
             Every data members of every single class declared within the namespace "domain"
             should be declared in the namespace "components", in order to keep all the basic types
             in one place. This process makes easier the handling of types for storing them properly.
+
+            | | | | | | | | | |
+            v v v v v v v v v v
         */
+
         namespace components {
             using Name = std::string;
             using Identifier = std::string;

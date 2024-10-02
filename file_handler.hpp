@@ -13,8 +13,6 @@ namespace catalogue {
         
         using namespace domain::components;
         using namespace domain::literals;
-
-        
         
         //template <typename Type>
         class DatabaseHandler {

@@ -16,8 +16,8 @@ namespace catalogue {
 
         class UserCatalogue {
         private:
-            using Users = std::deque<domain::User*>;
-            const domain::User* DUMMY = nullptr;
+            using UserPtr = std::shared_ptr<domain::User>;
+            using Users = std::deque<UserPtr>;
         public:
             template<typename UserInterface>
             void AddUser(UserInterface user) {
@@ -28,7 +28,7 @@ namespace catalogue {
                 identifier_to_user_[users_[new_user_index] -> identifier] = new_user_index;
             }
             
-            const domain::User* GetUserByIdentifier(Identifier identifier) const noexcept;
+            const UserPtr& GetUserByIdentifier(Identifier identifier) const noexcept;
 
         private:
             Users users_;

@@ -73,7 +73,7 @@ namespace testing {
     } //namespace domain
 
     namespace user_catalogue {
-        /*using namespace catalogue::database;
+        using namespace catalogue::database;
 
         void TestAddUser() {
             UserCatalogue catalogue;
@@ -94,7 +94,7 @@ namespace testing {
             auto t4 = catalogue.GetUserByIdentifier("4444"s);
             auto t5 = catalogue.GetUserByIdentifier("9999"s);
 
-            auto t1_casted = dynamic_cast<Student*>(t1.get());
+            auto t1_casted = dynamic_cast<const Student*>(t1.get());
             assert(t1_casted &&
                    t1_casted -> gender == Gender::FEMALE && 
                    t1_casted -> gender != Gender::MALE && 
@@ -107,10 +107,10 @@ namespace testing {
                    t1_casted -> group.GetAsTAA() != groups::TAA::FIRST_GRADE &&
                    t1_casted -> name == "Joaz"s &&
                    t1_casted -> name != "Jooaz"s);
-            assert(dynamic_cast<Student*>(t2.get()));
-            assert(dynamic_cast<Student*>(t3.get()));
-            assert(dynamic_cast<Student*>(t4.get()));
-            assert(dynamic_cast<Student*>(t5.get()));
+            assert(dynamic_cast<const Student*>(t2.get()));
+            assert(dynamic_cast<const Student*>(t3.get()));
+            assert(dynamic_cast<const Student*>(t4.get()));
+            assert(dynamic_cast<const Student*>(t5.get()));
 
 
             assert(t1 -> group.IsTAA());
@@ -118,7 +118,7 @@ namespace testing {
             assert(t3 -> group.IsTAC());
             assert(t4 -> group.IsTAA());
             assert(t5 -> group.IsTAC());
-        }*/
+        }
 
         /*void TestGetUsersByGroup() {
             UserCatalogue catalogue;
