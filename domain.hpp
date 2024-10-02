@@ -38,7 +38,7 @@ namespace catalogue {
         
 
         /*
-            Every data members of every single class declared within the namespace "domain"
+            Every data members of every single class declared within the struct "domain"
             should be declared in the namespace "components", in order to keep all the basic types
             in one place. This process makes easier the handling of types for storing them properly.
 
@@ -46,16 +46,17 @@ namespace catalogue {
             v v v v v v v v v v
         */
 
-        namespace components {
+        struct Components {
+            //class Person data member
             using Name = std::string;
+            //class User data member
             using Identifier = std::string;
-            using Index = int;
-
+            //class Person data member
             enum class Gender : bool {
                 MALE,
                 FEMALE
             };
-
+            //class User data member
             struct Group : std::variant<std::monostate, groups::TAC, groups::TAIS, groups::TAA> {
                 using variant::variant;
                 
@@ -67,31 +68,27 @@ namespace catalogue {
                 groups::TAIS GetAsTAIS() const;
                 groups::TAA GetAsTAA() const;
             };
-        } //namespace components
+        };
 
         namespace literals {
             std::filesystem::path operator""_p(const char* pathname, size_t size);
         } //namespace literals
-        
-
-        using namespace components;
 
         struct Person {
-            Name name;
-            Gender gender;
+            Components::Name name;
+            Components::Gender gender;
         protected:
             virtual ~Person() = default;
         };
         
-        
         template <typename Owner>
         struct PersonPathProps : Person {
-            Owner& SetName(Name n) {
+            Owner& SetName(Components::Name n) {
                 name = std::move(n);
                 return static_cast<Owner&>(*this);
             }
             
-            Owner& SetGender(Gender g) {
+            Owner& SetGender(Components::Gender g) {
                 gender = g;
                 return static_cast<Owner&>(*this);
             }
@@ -101,15 +98,15 @@ namespace catalogue {
         };
         
         struct User {
-            Identifier identifier;
-            Group group;
+            Components::Identifier identifier;
+            Components::Group group;
         protected:
             virtual ~User() = default;
         };
         
         template <typename Owner>
         struct UserPathProps : User {
-            Owner& SetIdentifier(Identifier i) {
+            Owner& SetIdentifier(Components::Identifier i) {
                 identifier = std::move(i);
                 return static_cast<Owner&>(*this);
             }

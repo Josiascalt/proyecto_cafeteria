@@ -10,16 +10,12 @@
 
 namespace catalogue {
     namespace file_handler {
-        
-        using namespace domain::components;
         using namespace domain::literals;
         
         //template <typename Type>
         class DatabaseHandler {
         public:
-            DatabaseHandler(const std::filesystem::path& path);
-
-            bool IsEmpty();
+            DatabaseHandler(const std::filesystem::path& parent_directory);
 
             /*template <typename Type>
             void Read(Type& target) {
@@ -36,8 +32,9 @@ namespace catalogue {
 
             //~DatabaseHandler();
         private:
-            bool is_empty_;
-            std::fstream database_;
+            std::fstream data_stream_;
+            std::unordered_map<std::filesystem::path, int> databases_to_layout;
+            
         };
 
         struct Entry {

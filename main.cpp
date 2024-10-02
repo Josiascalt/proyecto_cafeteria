@@ -23,7 +23,6 @@ using namespace std::literals;
 
 
 int main() {
-    using namespace catalogue::domain::components;
     using namespace catalogue::domain::literals;
 
     testing::domain::TestStudentStruct();
@@ -39,9 +38,13 @@ int main() {
     const auto SOURCE_FILE = DATA_DIRECTORY / "data.dat"_p;
 
     catalogue::file_handler::DatabaseHandler database(SOURCE_FILE);
-    
-    std::cout << std::boolalpha << database.IsEmpty() << '\n';
 
+    SIZEOF(catalogue::domain::Person);
+    SIZEOF(catalogue::domain::User);
+    SIZEOF(catalogue::domain::Student);
+    SIZEOF(std::fstream);
+    SIZEOF(std::filesystem::path);
+    
     std::cout << "Success!"sv;
     
     return 0;
