@@ -71,6 +71,10 @@ namespace catalogue {
             };
 
         public:
+            Components& SetHasName (bool value);
+            Components& SetHasIdentifier (bool value);
+            Components& SetHasGender(bool value);
+            Components& SetHasGroup(bool value);
             bool HasName() const;
             bool HasIdentifier() const;
             bool HasGender() const;
@@ -94,6 +98,7 @@ namespace catalogue {
 
         class CompoundTypes final {
         public:
+            /*--------------classes/structs interfaces and helpers--------------*/
             //struct-interface
             struct Person {
                 Components::Name name;
@@ -145,9 +150,11 @@ namespace catalogue {
                 virtual ~UserPathProps() = default;
             };
 
-            //final class
+            /*--------------final classes/structs--------------*/
             class Student final : public PersonPathProps<Student> , public UserPathProps<Student> {};
-        public:
+
+
+
             /*
                 In the enum class FinalTypes must be included all the final struct/clases
                 that were declared inside the class CompoundTypes, this is with the aim of
@@ -156,13 +163,19 @@ namespace catalogue {
                 v v v v v v v v v v
             */
 
-            enum class FinalTypes {
+            enum class FinalTypes : char {
                 UNKNOWN,
                 STUDENT
             };
 
+        public:
+            explicit CompoundTypes(FinalTypes);
+            FinalTypes GetType() const;
+            const Components& GetComponents() const;    
+
         private:
-            FinalTypes type_; 
+            FinalTypes type_;
+            Components components_;
         };
 
         namespace literals {

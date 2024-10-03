@@ -4,14 +4,13 @@
 #include "users_catalogue.cpp"
 #include "file_handler.hpp"
 #include "file_handler.cpp"
-
-
 #include "testing.hpp"
 
 #include <iostream>
 #include <iomanip>
 #include <string_view>
 #include <utility>
+#include <optional>
 
 using namespace std::literals;
 
@@ -40,15 +39,6 @@ int main() {
                                                                 .SetGroupData("grp"_p);
     
     catalogue::file_handler::DatabaseHandler database(DATA_FILES);
-
-
-
-    SIZEOF(catalogue::domain::Components);
-    SIZEOF(catalogue::domain::CompoundTypes);
-    SIZEOF(catalogue::domain::CompoundTypes::User);
-    SIZEOF(catalogue::domain::CompoundTypes::Student);
-    SIZEOF(std::fstream);
-    SIZEOF(std::filesystem::path);
     
     std::cout << "Success!"sv;
     
