@@ -98,7 +98,7 @@ namespace catalogue {
                     break;
             }
         }
-        
+
         CompoundTypes::FinalTypes CompoundTypes::GetType() const {
             return type_;
         }

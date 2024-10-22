@@ -7,6 +7,9 @@
 #include <variant>
 #include <filesystem>
 
+
+
+
 namespace catalogue {
     namespace domain {
         namespace groups {
@@ -169,6 +172,8 @@ namespace catalogue {
             };
 
         public:
+            template <typename T> 
+            explicit CompoundTypes(T* type);
             explicit CompoundTypes(FinalTypes);
             FinalTypes GetType() const;
             const Components& GetComponents() const;    
