@@ -4,6 +4,7 @@
 #include <string_view>
 #include <utility>
 #include <variant>
+#include <unordered_map>
 #include <filesystem>
 
 #include <iostream>
@@ -82,29 +83,37 @@ namespace catalogue {
             return std::get<groups::TAA>(*this);
         }
 
-        //class CompoundTypes member functions definition
-        CompoundTypes::CompoundTypes(FinalTypes type) 
-        : type_(type) {
-            using namespace std::literals;
-            switch (type_) {
-                case FinalTypes::STUDENT:
-                    components_ = Components{}.SetHasName(true)
-                                              .SetHasIdentifier(true)
-                                              .SetHasGender(true)
-                                              .SetHasGroup(true);
-                    break;
-                default:
-                    std::cerr << "UNKNOWN TYPE: ERROR THROWN WHILE CREATING COMPOUND TYPES OBJECT\n"sv;
-                    break;
+        namespace detail {
+            /*
+                The function GetComponents depends completely on the structure of the
+                final classes or structures inside Compound Types, so in order to keep the
+                program working efficiently, all the final types should be included in the variable
+                TYPE_TO_COMPONENTS with its components
+                | | | | | | | | | |
+                v v v v v v v v v v
+            */
+            static Components GetComponents(CompoundTypes::FinalTypes type) {
+                const std::unordered_map<CompoundTypes::FinalTypes, Components> TYPE_TO_COMPONENTS = 
+                {
+                    {CompoundTypes::FinalTypes::UNKNOWN, Components{}},
+                    {CompoundTypes::FinalTypes::STUDENT, Components{}.SetHasName(true)
+                                                    .SetHasIdentifier(true)
+                                                    .SetHasGender(true)
+                                                    .SetHasGroup(true)
+                    }
+                };
+                
+                return TYPE_TO_COMPONENTS.at(type);
             }
+        } ////namespace detail
+
+        //class Components member functions definition
+        Components CompoundTypes::GetComponents() const {
+            return detail::GetComponents(type_);
         }
 
         CompoundTypes::FinalTypes CompoundTypes::GetType() const {
             return type_;
-        }
-
-        const Components& CompoundTypes::GetComponents() const {
-            return components_;
         }
 
     } // namespace domain

@@ -7,8 +7,7 @@
 #include <variant>
 #include <filesystem>
 
-
-
+#include <type_traits>
 
 namespace catalogue {
     namespace domain {
@@ -99,7 +98,85 @@ namespace catalogue {
             v v v v v v v v v v
         */
 
-        class CompoundTypes final {
+        namespace compound_types {
+            //struct-interface
+            struct Person {
+                Components::Name name;
+                Components::Gender gender;
+            protected:
+                virtual ~Person() = default;
+            };
+
+            //struct Person's helper struct to enable named parameter idiom
+            template <typename Owner>
+            struct PersonPathProps : Person {
+                Owner& SetName(Components::Name n) {
+                    name = std::move(n);
+                    return static_cast<Owner&>(*this);
+                }
+                
+                Owner& SetGender(Components::Gender g) {
+                    gender = g;
+                    return static_cast<Owner&>(*this);
+                }
+
+            protected:
+                virtual ~PersonPathProps() = default;
+            };
+
+            //struct-interface
+            struct User {
+                Components::Identifier identifier;
+                Components::Group group;
+            protected:
+                virtual ~User() = default;
+            };
+
+            //struct User's helper struct to enable named parameter idiom
+            template <typename Owner>
+            struct UserPathProps : User {
+                Owner& SetIdentifier(Components::Identifier i) {
+                    identifier = std::move(i);
+                    return static_cast<Owner&>(*this);
+                }
+                
+                template <typename GroupType>
+                Owner& SetGroup(GroupType g) {
+                    group = g;
+                    return static_cast<Owner&>(*this);
+                }
+                
+            protected:
+                virtual ~UserPathProps() = default;
+            };
+
+            namespace final_types {
+                //class interface
+                class FinalTypes {
+                public:
+                    enum class Types : char;
+
+                    Types GetType() const;
+                    Components GetComponents() const;
+                private:
+                    Types type_;
+                protected:
+                    ~FinalTypes() = default;
+                };
+
+                class Student final : public FinalTypes, public PersonPathProps<Student>, public UserPathProps<Student>{};
+
+                
+            } //namespace final_types
+
+            
+
+
+
+            
+        } //namespace compound_types
+
+        class CompoundTypes {
         public:
             /*--------------classes/structs interfaces and helpers--------------*/
             //struct-interface
@@ -154,7 +231,7 @@ namespace catalogue {
             };
 
             /*--------------final classes/structs--------------*/
-            class Student final : public PersonPathProps<Student> , public UserPathProps<Student> {};
+            class Student final : public PersonPathProps<Student>, public UserPathProps<Student> {};
 
 
 
@@ -172,15 +249,19 @@ namespace catalogue {
             };
 
         public:
-            template <typename T> 
-            explicit CompoundTypes(T* type);
-            explicit CompoundTypes(FinalTypes);
+            CompoundTypes() = default;
+        
+            template <typename T>
+            explicit CompoundTypes(T) {
+                if (std::is_same_v<T, Student>) {
+                    type_ = FinalTypes::STUDENT;
+                }
+            }   
+            
+            Components GetComponents() const;
             FinalTypes GetType() const;
-            const Components& GetComponents() const;    
-
         private:
             FinalTypes type_;
-            Components components_;
         };
 
         namespace literals {
