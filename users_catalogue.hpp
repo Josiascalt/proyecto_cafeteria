@@ -13,7 +13,7 @@ namespace catalogue {
     namespace database {
         class UserCatalogue {
         private:
-            using UserPtr = std::shared_ptr<domain::CompoundTypes::User>;
+            using UserPtr = std::shared_ptr<domain::compound_types::User>;
             using Users = std::deque<UserPtr>;
             using Index = int;
         public:
@@ -26,7 +26,7 @@ namespace catalogue {
                 identifier_to_user_[users_[new_user_index] -> identifier] = new_user_index;
             }
             
-            const UserPtr& GetUserByIdentifier(domain::Components::Identifier identifier) const noexcept;
+            const UserPtr& GetUserByIdentifier(domain::components::Identifier identifier) const noexcept;
 
         private:
             Users users_;

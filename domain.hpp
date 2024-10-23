@@ -11,89 +11,95 @@
 
 namespace catalogue {
     namespace domain {
-        namespace groups {
-            enum class TAA : char {
-                MONOSTATE,
-                FIRST_GRADE,
-                SECOND_GRADE,
-                THIRD_GRADE
-            };
-
-            enum class TAC : char {
-                MONOSTATE,
-                BILINGUAL_BUSINESS_DEPARTMENT,
-                HEALTH_EDUCATION_DEPARTMENT,
-                MUSIC_DEPARTMENT,
-                THEOLOGY_DEPARTMENT
-            };
-
-            enum class TAIS : char {
-                MONOSTATE,
-                SEVENTH_GRADE,
-                EIGHTH_GRADE,
-                NINTH_GRADE,
-                TENTH_GRADE,
-                ELEVENTH_GRADE,
-                TWELFTH_GRADE
-            };
-        }//namespace groups
-        
+        namespace literals {
+            std::filesystem::path operator""_p(const char* pathname, size_t size);
+        } //namespace literals
 
         /*
-            Every data members of every single class declared within the class "CompoundTypes"
-            should be declared in the class "components", in order to keep all the basic types
+            Every data members of every single struct/class declared within the namespace compound_types
+            should be declared in the namespace "components", in order to keep all the basic types
             in one place. This process makes easier the handling of types for storing them properly.
 
             | | | | | | | | | |
             v v v v v v v v v v
         */
-
-        class Components final {
-        public:
-            //class Person data member
+        namespace components {
             using Name = std::string;
-            //class User data member
+
             using Identifier = std::string;
-            //class Person data member
+
             enum class Gender : bool {
                 MALE,
                 FEMALE
             };
-            //class User data member
-            struct Group : std::variant<std::monostate, groups::TAC, groups::TAIS, groups::TAA> {
-                using variant::variant;
+
+            class Group {
+            public:  
+                enum class TAA : char {
+                    MONOSTATE,
+                    FIRST_GRADE,
+                    SECOND_GRADE,
+                    THIRD_GRADE
+                };
+
+                enum class TAC : char {
+                    MONOSTATE,
+                    BILINGUAL_BUSINESS_DEPARTMENT,
+                    HEALTH_EDUCATION_DEPARTMENT,
+                    MUSIC_DEPARTMENT,
+                    THEOLOGY_DEPARTMENT
+                };
+
+                enum class TAIS : char {
+                    MONOSTATE,
+                    SEVENTH_GRADE,
+                    EIGHTH_GRADE,
+                    NINTH_GRADE,
+                    TENTH_GRADE,
+                    ELEVENTH_GRADE,
+                    TWELFTH_GRADE
+                };
                 
-                bool IsInitialized() const;
+                template <typename G>
+                Group& operator=(G&& group) {
+                    group_ = std::forward<G>(group);
+                    return *this;
+                }
+
                 bool IsTAC() const;
                 bool IsTAIS() const;
                 bool IsTAA() const;
-                groups::TAC GetAsTAC() const;
-                groups::TAIS GetAsTAIS() const;
-                groups::TAA GetAsTAA() const;
+                TAC GetAsTAC() const;
+                TAIS GetAsTAIS() const;
+                TAA GetAsTAA() const;
+
+                bool operator==(const Group& other) const;
+                bool operator!=(const Group& other) const;
+
+            private:
+                std::variant<TAC, TAIS, TAA> group_;
             };
+            
+            /*This struct should contain a has-version of all the datatypes declared above*/
+            struct Components {
+                Components& SetHasName (bool value);
+                Components& SetHasIdentifier (bool value);
+                Components& SetHasGender(bool value);
+                Components& SetHasGroup(bool value);
 
-        public:
-            Components& SetHasName (bool value);
-            Components& SetHasIdentifier (bool value);
-            Components& SetHasGender(bool value);
-            Components& SetHasGroup(bool value);
-            bool HasName() const;
-            bool HasIdentifier() const;
-            bool HasGender() const;
-            bool HasGroup() const;
-
-        private:
-            bool has_name_ = false;
-            bool has_identifier_ = false;
-            bool has_gender_ = false;
-            bool has_group_ = false;
-        };
+                bool has_name = false;
+                bool has_identifier = false;
+                bool has_gender = false;
+                bool has_group = false;
+            };
+        } //namespace components 
 
         /*
-            Every single class/struct should be declared in the class "CompoundTypes", and every data member
-            should be taken from the class "Components". In case that the desired datatype is not part of "Component",
-            it must be declared there and then make use of it as a data member in a class/struct in the class "CompoundTypes".
-
+            Every single class/struct should be declared in the namespace compound_types, 
+            and every data member type should be taken from the namespace components. 
+            In case that the desired datatype is not declared in the namespace component,
+            it must be declared there and then make use of it as a data member type 
+            in a class/struct in the namespace compound_types.
             | | | | | | | | | |
             v v v v v v v v v v
         */
@@ -101,8 +107,8 @@ namespace catalogue {
         namespace compound_types {
             //struct-interface
             struct Person {
-                Components::Name name;
-                Components::Gender gender;
+                components::Name name;
+                components::Gender gender;
             protected:
                 virtual ~Person() = default;
             };
@@ -110,12 +116,12 @@ namespace catalogue {
             //struct Person's helper struct to enable named parameter idiom
             template <typename Owner>
             struct PersonPathProps : Person {
-                Owner& SetName(Components::Name n) {
+                Owner& SetName(components::Name n) {
                     name = std::move(n);
                     return static_cast<Owner&>(*this);
                 }
                 
-                Owner& SetGender(Components::Gender g) {
+                Owner& SetGender(components::Gender g) {
                     gender = g;
                     return static_cast<Owner&>(*this);
                 }
@@ -126,8 +132,8 @@ namespace catalogue {
 
             //struct-interface
             struct User {
-                Components::Identifier identifier;
-                Components::Group group;
+                components::Identifier identifier;
+                components::Group group;
             protected:
                 virtual ~User() = default;
             };
@@ -135,7 +141,7 @@ namespace catalogue {
             //struct User's helper struct to enable named parameter idiom
             template <typename Owner>
             struct UserPathProps : User {
-                Owner& SetIdentifier(Components::Identifier i) {
+                Owner& SetIdentifier(components::Identifier i) {
                     identifier = std::move(i);
                     return static_cast<Owner&>(*this);
                 }
@@ -157,7 +163,7 @@ namespace catalogue {
                     enum class Types : char;
 
                     Types GetType() const;
-                    Components GetComponents() const;
+                    components::Components GetComponents() const;
                 private:
                     Types type_;
                 protected:
@@ -166,118 +172,12 @@ namespace catalogue {
 
                 class Student final : public FinalTypes, public PersonPathProps<Student>, public UserPathProps<Student>{};
 
-                
+                enum class FinalTypes::Types : char {
+                    STUDENT
+                };
+
             } //namespace final_types
-
-            
-
-
-
-            
-        } //namespace compound_types
-
-        class CompoundTypes {
-        public:
-            /*--------------classes/structs interfaces and helpers--------------*/
-            //struct-interface
-            struct Person {
-                Components::Name name;
-                Components::Gender gender;
-            protected:
-                virtual ~Person() = default;
-            };
-
-            //struct Person's helper struct to enable named parameter idiom
-            template <typename Owner>
-            struct PersonPathProps : Person {
-                Owner& SetName(Components::Name n) {
-                    name = std::move(n);
-                    return static_cast<Owner&>(*this);
-                }
-                
-                Owner& SetGender(Components::Gender g) {
-                    gender = g;
-                    return static_cast<Owner&>(*this);
-                }
-
-            protected:
-                virtual ~PersonPathProps() = default;
-            };
-
-            //struct-interface
-            struct User {
-                Components::Identifier identifier;
-                Components::Group group;
-            protected:
-                virtual ~User() = default;
-            };
-
-            //struct User's helper struct to enable named parameter idiom
-            template <typename Owner>
-            struct UserPathProps : User {
-                Owner& SetIdentifier(Components::Identifier i) {
-                    identifier = std::move(i);
-                    return static_cast<Owner&>(*this);
-                }
-                
-                template <typename GroupType>
-                Owner& SetGroup(GroupType g) {
-                    group = g;
-                    return static_cast<Owner&>(*this);
-                }
-                
-            protected:
-                virtual ~UserPathProps() = default;
-            };
-
-            /*--------------final classes/structs--------------*/
-            class Student final : public PersonPathProps<Student>, public UserPathProps<Student> {};
-
-
-
-            /*
-                In the enum class FinalTypes must be included all the final struct/clases
-                that were declared inside the class CompoundTypes, this is with the aim of
-                getting all the final classes/structs in one place.
-                | | | | | | | | | |
-                v v v v v v v v v v
-            */
-
-            enum class FinalTypes : char {
-                UNKNOWN,
-                STUDENT
-            };
-
-        public:
-            CompoundTypes() = default;
-        
-            template <typename T>
-            explicit CompoundTypes(T) {
-                if (std::is_same_v<T, Student>) {
-                    type_ = FinalTypes::STUDENT;
-                }
-            }   
-            
-            Components GetComponents() const;
-            FinalTypes GetType() const;
-        private:
-            FinalTypes type_;
-        };
-
-        namespace literals {
-            std::filesystem::path operator""_p(const char* pathname, size_t size);
-        } //namespace literals
-
-        
-        
-        
-        
-        
-        
-        
-        
-        
-         
+        } //namespace compound_types         
     } // namespace domain
 } // namespace catalogue
 

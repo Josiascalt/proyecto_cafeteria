@@ -3,7 +3,7 @@
 namespace catalogue {
     namespace database {
 
-        const UserCatalogue::UserPtr& UserCatalogue::GetUserByIdentifier(domain::Components::Identifier identifier) const noexcept {
+        const UserCatalogue::UserPtr& UserCatalogue::GetUserByIdentifier(domain::components::Identifier identifier) const noexcept {
             static const UserPtr DUMMY = nullptr;
             
             auto iter = identifier_to_user_.find(identifier);

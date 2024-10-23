@@ -76,7 +76,7 @@ namespace catalogue {
 
         struct Entry {
             std::string time;
-            domain::CompoundTypes::User* user;
+            domain::compound_types::User* user;
         };
 
         /*class RecordHandler {
