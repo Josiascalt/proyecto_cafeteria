@@ -7,10 +7,8 @@
 #include "testing.hpp"
 
 #include <iostream>
-#include <iomanip>
 #include <string_view>
 #include <utility>
-#include <optional>
 
 using namespace std::literals;
 
@@ -34,16 +32,29 @@ int main() {
     const auto RECORD_DIRECTORY = catalogue::file_handler::ValidatePath(TEMP_DIRECTORY / "Records"_p);
     const auto DATA_DIRECTORY = catalogue::file_handler::ValidatePath(TEMP_DIRECTORY / "Data"_p);
     
-    const auto METADATA_PATHS = catalogue::file_handler::MetadataPaths{}.SetLayout("layout.mdat")
-                                                                        .SetQueue("queue.mdat");
+    const auto METADATA_PATHS = catalogue::file_handler::MetadataPaths{}.SetLayout(DATA_DIRECTORY / "layout.mdat"_p)
+                                                                        .SetQueue(DATA_DIRECTORY / "queue.mdat"_p);
 
-    const auto DATA_PATHS = catalogue::file_handler::DataPaths{}.SetNameData("names.dat"_p)
-                                                                .SetIdentificatorData("identificators.dat"_p)
-                                                                .SetGenderData("genders.dat"_p)
-                                                                .SetGroupData("groups"_p);
+    const auto DATA_PATHS = catalogue::file_handler::DataPaths{}.SetNameData(DATA_DIRECTORY / "names.dat"_p)
+                                                                .SetIdentifierData(DATA_DIRECTORY / "identifiers.dat"_p)
+                                                                .SetGenderData(DATA_DIRECTORY / "genders.dat"_p)
+                                                                .SetGroupData(DATA_DIRECTORY / "groups.dat"_p);
 
     catalogue::file_handler::DatabaseHandler database(METADATA_PATHS, DATA_PATHS);
-    
+
+    while (true) {
+        std::string input;
+        std::getline(std::cin, input);
+        if (input == "ADD") {
+            database.Serialize(catalogue::domain::compound_types::final_types::Student{}.SetName("Josias"s));
+        } else if (input.empty() || input == "STOP") {
+            std::cout << "Thanks! Bye!\n";
+            break;
+        } else {
+            std::cout << "Student\n";
+        }
+    }
+
     std::cout << "Success!"sv;
     
     return 0;

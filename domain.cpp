@@ -84,10 +84,10 @@ namespace catalogue {
                         | | | | | | | | | |
                         v v v v v v v v v v
                     */
-                    static components::Components GetComponents(FinalTypes::Types type) {
-                        const std::unordered_map<FinalTypes::Types, components::Components> TYPE_TO_COMPONENTS = 
+                    static components::Components GetComponents(FinalTypes::TypeNames type) {
+                        const std::unordered_map<FinalTypes::TypeNames, components::Components> TYPE_TO_COMPONENTS = 
                         {
-                            {FinalTypes::Types::STUDENT, components::Components{}.SetHasName(true)
+                            {FinalTypes::TypeNames::STUDENT, components::Components{}.SetHasName(true)
                                                             .SetHasIdentifier(true)
                                                             .SetHasGender(true)
                                                             .SetHasGroup(true)
@@ -97,13 +97,29 @@ namespace catalogue {
                         return TYPE_TO_COMPONENTS.at(type);
                     }
                 } ////namespace detail
-                components::Components FinalTypes::GetComponents() const {
-                    return detail::GetComponents(type_);
+                //Class FinalTypes member functions definition
+                FinalTypes::FinalTypes(TypeNames name)
+                : typename_(name) {
+                    
                 }
 
-                FinalTypes::Types FinalTypes::GetType() const {
-                    return type_;
+                FinalTypes::TypeNames FinalTypes::GetTypeName() const {
+                    return typename_;
                 }
+
+                components::Components FinalTypes::GetComponents() const {
+                    return detail::GetComponents(typename_);
+                }
+
+                //Class Student member functions definition
+                Student::Student() 
+                : FinalTypes(TypeNames::STUDENT)
+                , PersonPathProps<Student>()
+                , UserPathProps<Student>()
+                {
+
+                }
+
             } //namespace final_types
         } //namespace compound_types
     } // namespace domain

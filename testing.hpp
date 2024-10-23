@@ -40,9 +40,9 @@ namespace testing {
                 !s1.group.IsTAC());
 
             assert(s2.gender == Gender::FEMALE &&
-                //s2.gender != s1.gender &&
+                s2.gender != s1.gender &&
                 s2.identifier == "222"s && 
-                //s2.identifier != s1.identifier &&
+                s2.identifier != s1.identifier &&
                 s2.name == "BBB"s &&
                 s2.name != "AAA"s &&
                 s2.name != s1.name &&
@@ -57,7 +57,7 @@ namespace testing {
                 !(!s3.identifier.empty()) &&
                 s3.name != "BBB"s &&
                 s3.name != s1.name &&
-                s3.name == ""s &&
+                s3.name.empty() &&
                 s3.group.IsTAC() &&
                 !s3.group.IsTAIS() &&
                 s3.group != s1.group &&

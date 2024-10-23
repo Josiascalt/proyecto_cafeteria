@@ -32,7 +32,7 @@ namespace catalogue {
         
         //class DatabaseHandler member functions definition
         DatabaseHandler::DatabaseHandler(const MetadataPaths& metadata, const DataPaths& data) 
-        : data_stream_()
+        : handler_()
         , metadata_(metadata)
         , data_(data)
         {

@@ -168,20 +168,24 @@ namespace catalogue {
                 //class interface
                 class FinalTypes {
                 public:
-                    enum class Types : char;
+                    enum class TypeNames : char;
+                
+                    explicit FinalTypes(TypeNames);
 
-                    Types GetType() const;
+                    FinalTypes GetType() const;
+                    TypeNames GetTypeName() const;
                     components::Components GetComponents() const;
                 private:
-                    Types type_;
-                protected:
-                    virtual ~FinalTypes() = default;
+                    TypeNames typename_;
                 };
 
                 //Final class
-                class Student final : public FinalTypes, public PersonPathProps<Student>, public UserPathProps<Student>{};
+                class Student final : public FinalTypes, public PersonPathProps<Student>, public UserPathProps<Student>{
+                public:
+                    Student();
+                };
 
-                enum class FinalTypes::Types : char {
+                enum class FinalTypes::TypeNames : char {
                     STUDENT
                 };
 
