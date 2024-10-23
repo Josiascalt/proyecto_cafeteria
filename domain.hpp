@@ -156,6 +156,14 @@ namespace catalogue {
                 virtual ~UserPathProps() = default;
             };
 
+            /*
+                Every single final class/struct should be declared in the namespace final_types.
+                All final types should he under the FinalTypes interface.
+                Final types are the classes/structs available for the user.
+                | | | | | | | | | |
+                v v v v v v v v v v
+            */
+
             namespace final_types {
                 //class interface
                 class FinalTypes {
@@ -170,6 +178,7 @@ namespace catalogue {
                     ~FinalTypes() = default;
                 };
 
+                //Final class
                 class Student final : public FinalTypes, public PersonPathProps<Student>, public UserPathProps<Student>{};
 
                 enum class FinalTypes::Types : char {
