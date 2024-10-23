@@ -58,7 +58,7 @@ namespace testing {
                 s3.name != "BBB"s &&
                 s3.name != s1.name &&
                 s3.name == ""s &&
-                !s3.group.IsTAC() &&
+                s3.group.IsTAC() &&
                 !s3.group.IsTAIS() &&
                 s3.group != s1.group &&
                 s3.group != s2.group);

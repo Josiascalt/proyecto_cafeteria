@@ -175,7 +175,7 @@ namespace catalogue {
                 private:
                     Types type_;
                 protected:
-                    ~FinalTypes() = default;
+                    virtual ~FinalTypes() = default;
                 };
 
                 //Final class

@@ -27,18 +27,22 @@ int main() {
     testing::user_catalogue::TestAddUser();
     //testing::user_catalogue::TestGetUsersByGroup();
 
+    //Root Directory
     const auto ROOT_PATH = std::filesystem::current_path();
-    const auto TEMP_DIRECTORY = catalogue::file_handler::ValidateDirectoryPath(ROOT_PATH / "MyOutput"_p);
-    //Directories
-    const auto RECORD_DIRECTORY = catalogue::file_handler::ValidateDirectoryPath(TEMP_DIRECTORY / "Records"_p);
-    const auto DATA_DIRECTORY = catalogue::file_handler::ValidateDirectoryPath(TEMP_DIRECTORY / "Data"_p);
+    const auto TEMP_DIRECTORY = catalogue::file_handler::ValidatePath(ROOT_PATH / "MyOutput"_p);
+    //Subdirectories
+    const auto RECORD_DIRECTORY = catalogue::file_handler::ValidatePath(TEMP_DIRECTORY / "Records"_p);
+    const auto DATA_DIRECTORY = catalogue::file_handler::ValidatePath(TEMP_DIRECTORY / "Data"_p);
     
-    const auto DATA_FILES = catalogue::file_handler::DataPaths{}.SetNameData("nae.dat"_p)
-                                                                .SetIdentificatorData("idr.dat"_p)
-                                                                .SetGenderData("ger.dat"_p)
-                                                                .SetGroupData("grp"_p);
-    
-    catalogue::file_handler::DatabaseHandler database(DATA_FILES);
+    const auto METADATA_PATHS = catalogue::file_handler::MetadataPaths{}.SetLayout("layout.mdat")
+                                                                        .SetQueue("queue.mdat");
+
+    const auto DATA_PATHS = catalogue::file_handler::DataPaths{}.SetNameData("names.dat"_p)
+                                                                .SetIdentificatorData("identificators.dat"_p)
+                                                                .SetGenderData("genders.dat"_p)
+                                                                .SetGroupData("groups"_p);
+
+    catalogue::file_handler::DatabaseHandler database(METADATA_PATHS, DATA_PATHS);
     
     std::cout << "Success!"sv;
     
