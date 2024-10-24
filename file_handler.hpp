@@ -93,29 +93,30 @@ namespace catalogue {
                     WriteInBinary(data_.name_data, obj.name.data(), size);
                 }
 
-                /*if (elem_layout.has_group) {
-                    WriteInBinary(data_.group_data, obj.group);
+                if (elem_layout.has_group) {
+                    WriteInBinary(data_.group_data, &obj.group);
                 }
 
                 if (elem_layout.has_gender) {
-                    WriteInBinary(data_.gender_data, obj.gender);
-                }*/
+                    WriteInBinary(data_.gender_data, &obj.gender);
+                }
 
                 return false;
             }
 
             /*bool Deserialize() {
-                fstream file_handler;
+                using namespace domain::compound_types::final_types;
+                using namespace domain::components;
+
+                FinalTypes* elem;
+                Components* elem_layout;
+                ReadInBinary(metadata_.queue, &elem);
+                ReadInBinary(metadata_.layout, &elem_layout);
                 
-                catalogue::domain::CompoundTypes queue_elem;
-                catalogue::domain::Components layout;
-                
-                ReadInBinary(file_handler, metadata.queue, &queue_elem);
-                ReadInBinary(file_handler, metadata.layout, &layout);
-                
-                if (layout.HasName()) {
+                if (elem_layout -> has_name) {
                     
                 }
+
                 return true;
             }*/
 

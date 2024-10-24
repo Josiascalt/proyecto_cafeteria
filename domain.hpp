@@ -60,9 +60,17 @@ namespace catalogue {
                     TWELFTH_GRADE
                 };
                 
-                template <typename G>
-                Group& operator=(G&& group) {
-                    group_ = std::forward<G>(group);
+                Group() = default;
+
+                template <class GroupName>
+                Group(GroupName group) 
+                : group_(group) 
+                {
+                }
+
+                template <class GroupName>
+                Group& operator=(GroupName group) {
+                    group_ = group;
                     return *this;
                 }
 

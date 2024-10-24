@@ -34,6 +34,9 @@ namespace testing {
             assert(s1.gender == Gender::MALE &&
                 s1.identifier == "111"s && 
                 s1.group.IsTAIS() &&
+                s1.group.GetAsTAIS() == Group::TAIS::SEVENTH_GRADE &&
+                s1.group.GetAsTAIS() != Group::TAIS::TWELFTH_GRADE &&
+                s1.group.GetAsTAIS() != Group::TAIS::MONOSTATE &&
                 s1.name == "AAA"s &&
                 s1.identifier != ""s &&
                 s1.name != "BBB"s &&

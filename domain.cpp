@@ -31,7 +31,7 @@ namespace catalogue {
                 return std::holds_alternative<TAA>(group_);
             }
 
-            Group::TAC components::Group::GetAsTAC() const {
+            Group::TAC Group::GetAsTAC() const {
                 return std::get<TAC>(group_);
             }
 
