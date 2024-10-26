@@ -89,11 +89,11 @@ namespace catalogue {
             };
             
             /*This struct should contain a has-version of all the datatypes declared above*/
-            struct Components {
-                Components& SetHasName (bool value);
-                Components& SetHasIdentifier (bool value);
-                Components& SetHasGender(bool value);
-                Components& SetHasGroup(bool value);
+            struct Composition {
+                Composition& SetHasName (bool value);
+                Composition& SetHasIdentifier (bool value);
+                Composition& SetHasGender(bool value);
+                Composition& SetHasGroup(bool value);
 
                 bool has_name = false;
                 bool has_identifier = false;
@@ -182,7 +182,7 @@ namespace catalogue {
 
                     FinalTypes GetType() const;
                     TypeNames GetTypeName() const;
-                    components::Components GetComponents() const;
+                    components::Composition GetComponents() const;
                 private:
                     TypeNames typename_;
                 };

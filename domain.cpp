@@ -51,23 +51,23 @@ namespace catalogue {
                 return !(*this == other);
             }
 
-            //Class Components member functions definition
-            Components& Components::SetHasName (bool value) {
+            //Class Composition member functions definition
+            Composition& Composition::SetHasName (bool value) {
                 has_name = value;
                 return *this;
             }
 
-            Components& Components::SetHasIdentifier (bool value) {
+            Composition& Composition::SetHasIdentifier (bool value) {
                 has_identifier = value;
                 return *this;
             }
 
-            Components& Components::SetHasGender(bool value) {
+            Composition& Composition::SetHasGender(bool value) {
                 has_gender = value;
                 return *this;
             }
 
-            Components& Components::SetHasGroup(bool value) {
+            Composition& Composition::SetHasGroup(bool value) {
                 has_group = value;
                 return *this;
             }
@@ -84,10 +84,10 @@ namespace catalogue {
                         | | | | | | | | | |
                         v v v v v v v v v v
                     */
-                    static components::Components GetComponents(FinalTypes::TypeNames type) {
-                        const std::unordered_map<FinalTypes::TypeNames, components::Components> TYPE_TO_COMPONENTS = 
+                    static components::Composition GetComponents(FinalTypes::TypeNames type) {
+                        const std::unordered_map<FinalTypes::TypeNames, components::Composition> TYPE_TO_COMPONENTS = 
                         {
-                            {FinalTypes::TypeNames::STUDENT, components::Components{}.SetHasName(true)
+                            {FinalTypes::TypeNames::STUDENT, components::Composition{}.SetHasName(true)
                                                             .SetHasIdentifier(true)
                                                             .SetHasGender(true)
                                                             .SetHasGroup(true)
@@ -107,7 +107,7 @@ namespace catalogue {
                     return typename_;
                 }
 
-                components::Components FinalTypes::GetComponents() const {
+                components::Composition FinalTypes::GetComponents() const {
                     return detail::GetComponents(typename_);
                 }
 

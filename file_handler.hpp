@@ -13,16 +13,18 @@ namespace catalogue {
     namespace file_handler {
         namespace fs = std::filesystem;
         using namespace domain::literals;
-
+        using namespace domain::components;
+        using namespace domain::compound_types::final_types;
+        
         namespace exceptions {
             struct ValidationPathError {};
         } //namespace exceptions
         
         static fs::path ValidatePath(const fs::path&& path_to_validate);
         /*
-            The struct DataPaths depends on the datatypes of the struct Components 
+            The struct DataPaths depends on the datatypes of the struct Composition 
             in the namespace domain. Every path in the struct DataPaths links to file 
-            that storages a datatype from struct Components.
+            that storages a datatype from struct Composition.
         */
 
         struct DataPaths {
@@ -74,30 +76,27 @@ namespace catalogue {
 
             template <typename T>
             bool Serialize(T obj) {
-                using namespace domain::compound_types::final_types;
-                FinalTypes elem = obj;
-                auto elem_layout = elem.GetComponents();
+                auto layout = obj.GetComponents();
+
+                SerializeMetadata(&obj, &layout);
                 
-                WriteInBinary(metadata_.queue, &elem);
-                WriteInBinary(metadata_.layout, &elem_layout);
-                
-                if (elem_layout.has_name) {
+                if (layout.has_name) {
                     int8_t size = obj.name.size();
                     WriteInBinary(data_.name_data, &size);
                     WriteInBinary(data_.name_data, obj.name.data(), size);
                 }
                 
-                if (elem_layout.has_identifier) {
+                if (layout.has_identifier) {
                     int8_t size = obj.identifier.size();
                     WriteInBinary(data_.identifier_data, &size);
                     WriteInBinary(data_.name_data, obj.name.data(), size);
                 }
 
-                if (elem_layout.has_group) {
+                if (layout.has_group) {
                     WriteInBinary(data_.group_data, &obj.group);
                 }
 
-                if (elem_layout.has_gender) {
+                if (layout.has_gender) {
                     WriteInBinary(data_.gender_data, &obj.gender);
                 }
 
@@ -109,19 +108,25 @@ namespace catalogue {
                 using namespace domain::components;
 
                 FinalTypes* elem;
-                Components* elem_layout;
-                ReadInBinary(metadata_.queue, &elem);
-                ReadInBinary(metadata_.layout, &elem_layout);
+                Composition* elem_layout;
+                ReadInBinary(metadata_.queue, elem);
+                ReadInBinary(metadata_.layout, elem_layout);
                 
                 if (elem_layout -> has_name) {
                     
                 }
+
 
                 return true;
             }*/
 
             //~DatabaseHandler();
         private: //Private member fuctions
+            bool SerializeMetadata(FinalTypes* obj, Composition* layout) {
+                return WriteInBinary(metadata_.queue, obj) 
+                    && WriteInBinary(metadata_.layout, layout);
+            }
+
             template <typename T>
             bool WriteInBinary(fs::path path, T* value, uint8_t size = sizeof(T)) {
                 handler_.open(path, std::ios::out | std::ios::binary | std::ios::app);
@@ -151,7 +156,6 @@ namespace catalogue {
             std::fstream handler_;
             const MetadataPaths& metadata_;
             const DataPaths& data_;
-            
         };
 
         struct Entry {
