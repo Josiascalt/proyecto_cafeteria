@@ -32,8 +32,7 @@ int main() {
     const auto RECORD_DIRECTORY = catalogue::file_handler::ValidatePath(TEMP_DIRECTORY / "Records"_p);
     const auto DATA_DIRECTORY = catalogue::file_handler::ValidatePath(TEMP_DIRECTORY / "Data"_p);
     
-    const auto METADATA_PATHS = catalogue::file_handler::MetadataPaths{}.SetLayout(DATA_DIRECTORY / "layout.mdat"_p)
-                                                                        .SetQueue(DATA_DIRECTORY / "queue.mdat"_p);
+    const auto METADATA_PATHS = catalogue::file_handler::MetadataPaths{}.SetQueue(DATA_DIRECTORY / "queue.mdat"_p);
 
     const auto DATA_PATHS = catalogue::file_handler::DataPaths{}.SetNameData(DATA_DIRECTORY / "names.dat"_p)
                                                                 .SetIdentifierData(DATA_DIRECTORY / "identifiers.dat"_p)

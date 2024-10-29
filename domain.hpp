@@ -177,10 +177,9 @@ namespace catalogue {
                 class FinalTypes {
                 public:
                     enum class TypeNames : char;
-                
+                    FinalTypes() = default;
                     explicit FinalTypes(TypeNames);
 
-                    FinalTypes GetType() const;
                     TypeNames GetTypeName() const;
                     components::Composition GetComponents() const;
                 private:
@@ -194,7 +193,6 @@ namespace catalogue {
                 };
 
                 enum class FinalTypes::TypeNames : char {
-
                     STUDENT
                 };
 

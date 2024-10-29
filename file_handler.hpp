@@ -8,6 +8,7 @@
 #include <utility>
 #include <optional>
 #include <cstdint>
+#include <memory>
 
 namespace catalogue {
     namespace file_handler {
@@ -55,14 +56,8 @@ namespace catalogue {
         };
         
         struct MetadataPaths {
-            fs::path layout;
             fs::path queue;
 
-            MetadataPaths& SetLayout(fs::path path) {
-                layout = std::move(path);
-                return *this;
-            }
-            
             MetadataPaths& SetQueue(fs::path path) {
                 queue = std::move(path);
                 return *this;
@@ -70,7 +65,7 @@ namespace catalogue {
         };
 
         //template <typename Type>
-       /*class DatabaseHandler {
+       class DatabaseHandler {
         public: //Public member functions
             DatabaseHandler(const MetadataPaths& metadata, const DataPaths& data);
 
@@ -107,22 +102,27 @@ namespace catalogue {
                 using namespace domain::compound_types::final_types;
                 using namespace domain::components;
 
-                FinalTypes* elem;
-                Composition* elem_layout;
-                ReadInBinary(metadata_.queue, elem);
-                ReadInBinary(metadata_.layout, elem_layout);
+                FinalTypes elem;
+                ReadInBinary(metadata_.queue, &elem);
+
+                if (elem.GetTypeName() == FinalTypes::TypeNames::STUDENT) {
+                    Student student;
+
+
+                } 
+
+
                 
                 
 
 
                 return true;
-            }*/
+            }
 
             //~DatabaseHandler();
         private: //Private member fuctions
             bool SerializeMetadata(FinalTypes* obj, Composition* layout) {
-                return WriteInBinary(metadata_.queue, obj) 
-                    && WriteInBinary(metadata_.layout, layout);
+                return WriteInBinary(metadata_.queue, obj);
             }
 
             template <typename T>
