@@ -139,7 +139,7 @@ namespace catalogue {
             }
 
             template <typename T>
-            std::optional<std::vector<T>> DeserializeFile(fs::path path) {
+            std::unique_ptr<std::vector<T>> DeserializeFile(fs::path path, std::vector<Size>* sizes = nullptr) {
                 handler_.open(path, std::ios::in | std::ios::binary | std::ios::ate);
 
                 if (Size file_size = handler_.tellg(); file_size > 0 && handler_) {
@@ -150,14 +150,25 @@ namespace catalogue {
 
                     file_content.reserve(total_elements);
                     file_content.resize(total_elements);
-                    handler_.read(reinterpret_cast<char*>(file_content.data()), file_size);
+
+                    if (sizes.size() == file_content.size()) {
+                        int iter = 0;
+                        while (iter != file_content) {
+
+                            handler_.read(reinterpret_cast<char*>(&file_content[iter]), sizes[iter]);
+                            ++iter;
+                        }
+
+                    } else {
+                        handler_.read(reinterpret_cast<char*>(file_content.data()), file_size);
+                    }
 
                     handler_.close();
 
-                    return file_content;
+                    return std::make_unique<std::vector<T>>(file_content);
                 } 
 
-                return std::nullopt;  
+                return nullptr;  
             }
 
             template <typename T>
