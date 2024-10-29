@@ -70,7 +70,7 @@ namespace catalogue {
         };
 
         //template <typename Type>
-        class DatabaseHandler {
+       /*class DatabaseHandler {
         public: //Public member functions
             DatabaseHandler(const MetadataPaths& metadata, const DataPaths& data);
 
@@ -103,7 +103,7 @@ namespace catalogue {
                 return false;
             }
 
-            /*bool Deserialize() {
+            bool Deserialize() {
                 using namespace domain::compound_types::final_types;
                 using namespace domain::components;
 
@@ -112,9 +112,7 @@ namespace catalogue {
                 ReadInBinary(metadata_.queue, elem);
                 ReadInBinary(metadata_.layout, elem_layout);
                 
-                if (elem_layout -> has_name) {
-                    
-                }
+                
 
 
                 return true;

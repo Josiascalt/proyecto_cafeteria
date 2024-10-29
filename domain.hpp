@@ -194,6 +194,7 @@ namespace catalogue {
                 };
 
                 enum class FinalTypes::TypeNames : char {
+
                     STUDENT
                 };
 
