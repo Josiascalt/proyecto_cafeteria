@@ -1,14 +1,16 @@
 #pragma once
 
 #include "domain.hpp"
+#include "users_catalogue.hpp"
 
 #include <fstream>
 #include <filesystem>
+#include <vector>
 #include <unordered_map>
 #include <utility>
 #include <optional>
-#include <cstdint>
 #include <memory>
+#include <optional>
 
 namespace catalogue {
     namespace file_handler {
@@ -21,7 +23,6 @@ namespace catalogue {
             struct ValidationPathError {};
         } //namespace exceptions
         
-        static fs::path ValidatePath(const fs::path&& path_to_validate);
         /*
             The struct DataPaths depends on the datatypes of the struct Composition 
             in the namespace domain. Every path in the struct DataPaths links to file 
@@ -29,18 +30,23 @@ namespace catalogue {
         */
 
         struct DataPaths {
-            fs::path name_data;
-            fs::path identifier_data;
+            struct SizedData {
+                fs::path data;
+                fs::path sizes;
+            };
+            
+            SizedData name_data;
+            SizedData identifier_data;
             fs::path gender_data;
             fs::path group_data;
 
-            DataPaths& SetNameData(fs::path path) {
-                name_data = std::move(path);
+            DataPaths& SetNameData(SizedData paths) {
+                name_data = std::move(paths);
                 return *this;
             }
 
-            DataPaths& SetIdentifierData(fs::path path) {
-                identifier_data = std::move(path);
+            DataPaths& SetIdentifierData(SizedData paths) {
+                identifier_data = std::move(paths);
                 return *this;
             }
 
@@ -64,27 +70,30 @@ namespace catalogue {
             }
         };
 
+        static fs::path ValidatePath(const fs::path&& path_to_validate);
+
         //template <typename Type>
        class DatabaseHandler {
         public: //Public member functions
-            DatabaseHandler(const MetadataPaths& metadata, const DataPaths& data);
+            DatabaseHandler(database::UserCatalogue& catalogue, const MetadataPaths& metadata, const DataPaths& data);
 
             template <typename T>
             bool Serialize(T obj) {
                 auto layout = obj.GetComponents();
 
-                SerializeMetadata(&obj, &layout);
+                SerializeMetadata(&obj);
                 
                 if (layout.has_name) {
-                    int8_t size = obj.name.size();
-                    WriteInBinary(data_.name_data, &size);
-                    WriteInBinary(data_.name_data, obj.name.data(), size);
+                    Size size = obj.name.size();
+                    WriteInBinary(data_.name_data.sizes, &size);
+                    WriteInBinary(data_.name_data.data, obj.name.data(), size);
                 }
                 
                 if (layout.has_identifier) {
-                    int8_t size = obj.identifier.size();
-                    WriteInBinary(data_.identifier_data, &size);
-                    WriteInBinary(data_.name_data, obj.name.data(), size);
+                    Size size = obj.identifier.size();
+
+                    WriteInBinary(data_.identifier_data.sizes, &size);
+                    WriteInBinary(data_.identifier_data.data, obj.identifier.data(), size);
                 }
 
                 if (layout.has_group) {
@@ -102,31 +111,57 @@ namespace catalogue {
                 using namespace domain::compound_types::final_types;
                 using namespace domain::components;
 
-                FinalTypes elem;
-                ReadInBinary(metadata_.queue, &elem);
-
-                if (elem.GetTypeName() == FinalTypes::TypeNames::STUDENT) {
-                    Student student;
-
-
-                } 
-
-
+                //Metadata
+                auto queue = DeserializeFile<FinalTypes>(metadata_.queue);
                 
+                //Data
+                auto names_sizes = DeserializeFile<Size>(data_.name_data.sizes);
+                auto names = DeserializeFile<domain::components::Name>(data_.name_data.data);
+                auto identifiers_sizes = DeserializeFile<Size>(data_.identifier_data.sizes);
+                auto identifiers = DeserializeFile<domain::components::Identifier>(data_.identifier_data.data);
+                auto groups = DeserializeFile<domain::components::Group>(data_.gender_data);
+                auto genders = DeserializeFile<domain::components::Gender>(data_.gender_data);
                 
-
+                /*if (elem.GetTypeName() == FinalTypes::TypeNames::STUDENT) {
+                    catalogue_.AddUser(CreateObject<Student>());
+                }*/ 
 
                 return true;
             }
 
             //~DatabaseHandler();
+
         private: //Private member fuctions
-            bool SerializeMetadata(FinalTypes* obj, Composition* layout) {
+            using Size = int;
+            
+            bool SerializeMetadata(FinalTypes* obj) {
                 return WriteInBinary(metadata_.queue, obj);
             }
 
             template <typename T>
-            bool WriteInBinary(fs::path path, T* value, uint8_t size = sizeof(T)) {
+            std::optional<std::vector<T>> DeserializeFile(fs::path path) {
+                handler_.open(path, std::ios::in | std::ios::binary | std::ios::ate);
+
+                if (Size file_size = handler_.tellg(); file_size > 0 && handler_) {
+                    handler_.seekg(0);
+                    
+                    auto total_elements = file_size / sizeof(T);
+                    std::vector<T> file_content;
+
+                    file_content.reserve(total_elements);
+                    file_content.resize(total_elements);
+                    handler_.read(reinterpret_cast<char*>(file_content.data()), file_size);
+
+                    handler_.close();
+
+                    return file_content;
+                } 
+
+                return std::nullopt;  
+            }
+
+            template <typename T>
+            bool WriteInBinary(fs::path path, T* value, Size size = sizeof(T)) {
                 handler_.open(path, std::ios::out | std::ios::binary | std::ios::app);
 
                 if (handler_) {
@@ -139,7 +174,7 @@ namespace catalogue {
             } 
 
             template <typename T>
-            bool ReadInBinary(fs::path path, T* target, uint8_t size = sizeof(T)) {
+            bool ReadInBinary(fs::path path, T* target, Size size = sizeof(T)) {
                 handler_.open(path, std::ios::in | std::ios::binary);
                 if (handler_) {
                     handler_.read(reinterpret_cast<char*>(target), size);
@@ -149,11 +184,46 @@ namespace catalogue {
                 
                 return false;
             }
+            
+            template <typename T>
+            T CreateObject() {
+                T obj;
+
+                auto layout = obj.GetComponents();
+
+                if (layout.has_name) {
+                    int size = 0;
+                    ReadInBinary(data_.name_data.sizes, &size);
+
+                    obj.name.resize(size);
+                    ReadInBinary(data_.name_data.data, obj.name.data(), size);
+                }
+                
+                if (layout.has_identifier) {
+                    int size;
+                    ReadInBinary(data_.identifier_data.sizes, &size);
+
+                    obj.identifier.resize(size);
+                    ReadInBinary(data_.identifier_data.data, obj.identifier.data(), size);
+                }
+
+                if (layout.has_group) {
+                    ReadInBinary(data_.group_data, &obj.group);
+                }
+
+                if (layout.has_gender) {
+                    ReadInBinary(data_.gender_data, &obj.gender);
+                }
+
+                return obj;
+            }
 
         private: //Private data members
-            std::fstream handler_;
+            database::UserCatalogue& catalogue_;
             const MetadataPaths& metadata_;
             const DataPaths& data_;
+
+            std::fstream handler_;  
         };
 
         struct Entry {

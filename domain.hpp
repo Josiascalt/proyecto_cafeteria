@@ -177,6 +177,7 @@ namespace catalogue {
                 class FinalTypes {
                 public:
                     enum class TypeNames : char;
+                    
                     FinalTypes() = default;
                     explicit FinalTypes(TypeNames);
 

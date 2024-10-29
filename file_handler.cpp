@@ -31,10 +31,11 @@ namespace catalogue {
         }
         
         //class DatabaseHandler member functions definition
-        DatabaseHandler::DatabaseHandler(const MetadataPaths& metadata, const DataPaths& data) 
-        : handler_()
+        DatabaseHandler::DatabaseHandler(database::UserCatalogue& catalogue, const MetadataPaths& metadata, const DataPaths& data) 
+        : catalogue_(catalogue)
         , metadata_(metadata)
         , data_(data)
+        , handler_()
         {
 
         }

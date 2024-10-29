@@ -34,18 +34,26 @@ int main() {
     
     const auto METADATA_PATHS = catalogue::file_handler::MetadataPaths{}.SetQueue(DATA_DIRECTORY / "queue.mdat"_p);
 
-    const auto DATA_PATHS = catalogue::file_handler::DataPaths{}.SetNameData(DATA_DIRECTORY / "names.dat"_p)
-                                                                .SetIdentifierData(DATA_DIRECTORY / "identifiers.dat"_p)
+    const auto DATA_PATHS = catalogue::file_handler::DataPaths{}.SetNameData({DATA_DIRECTORY / "names.dat"_p, DATA_DIRECTORY / "namessz.dat"_p})
+                                                                .SetIdentifierData({DATA_DIRECTORY / "identifiers.dat"_p, DATA_DIRECTORY / "identifierssz.dat"_p})
                                                                 .SetGenderData(DATA_DIRECTORY / "genders.dat"_p)
                                                                 .SetGroupData(DATA_DIRECTORY / "groups.dat"_p);
 
-    catalogue::file_handler::DatabaseHandler database(METADATA_PATHS, DATA_PATHS);
+    catalogue::database::UserCatalogue catalogue;
+    catalogue::file_handler::DatabaseHandler database(catalogue, METADATA_PATHS, DATA_PATHS);
+
+    //database.Deserialize();
+    //auto item = catalogue.GetUserByIdentifier("JCA0109"s);
+    //std::cout << (item ? item -> identifier : "none") << '\n';
 
     while (true) {
         std::string input;
         std::getline(std::cin, input);
         if (input == "ADD") {
-            database.Serialize(catalogue::domain::compound_types::final_types::Student{}.SetName("Josias"s));
+            database.Serialize(catalogue::domain::compound_types::final_types::Student{}.SetName("Josias"s)
+                                                                                        .SetGroup(catalogue::domain::components::Group::TAC::BILINGUAL_BUSINESS_DEPARTMENT)
+                                                                                        .SetGender(catalogue::domain::components::Gender::MALE)
+                                                                                        .SetIdentifier("JCA0109"s));
         } else if (input.empty() || input == "STOP") {
             std::cout << "Thanks! Bye!\n";
             break;
