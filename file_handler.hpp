@@ -144,22 +144,21 @@ namespace catalogue {
 
                 if (Size file_size = handler_.tellg(); file_size > 0 && handler_) {
                     handler_.seekg(0);
-                    
-                    auto total_elements = file_size / sizeof(T);
                     std::vector<T> file_content;
 
-                    file_content.reserve(total_elements);
-                    file_content.resize(total_elements);
+                    if (sizes) {
+                        
+                        file_content.resize(sizes -> size());
 
-                    if (sizes.size() == file_content.size()) {
                         int iter = 0;
-                        while (iter != file_content) {
-
-                            handler_.read(reinterpret_cast<char*>(&file_content[iter]), sizes[iter]);
+                        while (iter != file_content.size()) {
+                            file_content[iter].resize((*sizes)[iter]);
+                            handler_.read(reinterpret_cast<char*>(&file_content[iter]), file_content[iter].size());
                             ++iter;
                         }
 
                     } else {
+                        file_content.resize(file_size / sizeof(T));
                         handler_.read(reinterpret_cast<char*>(file_content.data()), file_size);
                     }
 
