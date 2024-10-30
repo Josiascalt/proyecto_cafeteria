@@ -42,7 +42,7 @@ int main() {
     catalogue::database::UserCatalogue catalogue;
     catalogue::file_handler::DatabaseHandler database(catalogue, METADATA_PATHS, DATA_PATHS);
 
-    //database.Deserialize();
+    database.Deserialize();
     //auto item = catalogue.GetUserByIdentifier("JCA0109"s);
     //std::cout << (item ? item -> identifier : "none") << '\n';
 

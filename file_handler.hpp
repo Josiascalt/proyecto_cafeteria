@@ -116,10 +116,10 @@ namespace catalogue {
                 
                 //Data
                 auto names_sizes = DeserializeFile<Size>(data_.name_data.sizes);
-                auto names = DeserializeFile<domain::components::Name>(data_.name_data.data);
+                auto names = DeserializeFile<domain::components::Name>(data_.name_data.data, names_sizes);
                 auto identifiers_sizes = DeserializeFile<Size>(data_.identifier_data.sizes);
-                auto identifiers = DeserializeFile<domain::components::Identifier>(data_.identifier_data.data);
-                auto groups = DeserializeFile<domain::components::Group>(data_.gender_data);
+                auto identifiers = DeserializeFile<domain::components::Identifier>(data_.identifier_data.data, identifiers_sizes);
+                //auto groups = DeserializeFile<domain::components::Group>(data_.gender_data);
                 auto genders = DeserializeFile<domain::components::Gender>(data_.gender_data);
                 
                 /*if (elem.GetTypeName() == FinalTypes::TypeNames::STUDENT) {
@@ -175,7 +175,7 @@ namespace catalogue {
 
                     handler_.close();
 
-                    return file_content;
+                    return std::make_unique<std::vector<T>>(file_content);;
                 }
 
                 return nullptr;
