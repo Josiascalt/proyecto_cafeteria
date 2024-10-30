@@ -1,6 +1,8 @@
 {
-    "files.associations": {
-        "vector": "cpp",
-        "iterator": "cpp"
-    }
+  "files.associations": {
+    "vector": "cpp",
+    "iterator": "cpp",
+    "variant": "cpp"
+  },
+  "C_Cpp_Runner.msvcBatchPath": ""
 }

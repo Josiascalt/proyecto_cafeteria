@@ -139,28 +139,15 @@ namespace catalogue {
             }
 
             template <typename T>
-            std::unique_ptr<std::vector<T>> DeserializeFile(fs::path path, std::vector<Size>* sizes = nullptr) {
+            std::unique_ptr<std::vector<T>> DeserializeFile(fs::path path) {
                 handler_.open(path, std::ios::in | std::ios::binary | std::ios::ate);
-
                 if (Size file_size = handler_.tellg(); file_size > 0 && handler_) {
                     handler_.seekg(0);
+
                     std::vector<T> file_content;
+                    file_content.resize(file_size / sizeof(T));
 
-                    if (sizes) {
-                        
-                        file_content.resize(sizes -> size());
-
-                        int iter = 0;
-                        while (iter != file_content.size()) {
-                            file_content[iter].resize((*sizes)[iter]);
-                            handler_.read(reinterpret_cast<char*>(&file_content[iter]), file_content[iter].size());
-                            ++iter;
-                        }
-
-                    } else {
-                        file_content.resize(file_size / sizeof(T));
-                        handler_.read(reinterpret_cast<char*>(file_content.data()), file_size);
-                    }
+                    handler_.read(reinterpret_cast<char*>(file_content.data()), file_size);
 
                     handler_.close();
 
@@ -168,6 +155,30 @@ namespace catalogue {
                 } 
 
                 return nullptr;  
+            }
+
+            template <typename T>
+            std::unique_ptr<std::vector<T>> DeserializeFile(fs::path path, const std::unique_ptr<std::vector<Size>>& sizes) {
+                handler_.open(path, std::ios::in | std::ios::binary | std::ios::ate);
+                if (Size file_size = handler_.tellg(); file_size > 0 && handler_ && sizes) {
+                    handler_.seekg(0);
+
+                    std::vector<T> file_content;
+                    file_content.reserve(sizes -> size());
+
+                    T elem;
+                    for (auto size : *sizes) {
+                        elem.resize(size);
+                        handler_.read(reinterpret_cast<char*>(elem.data()), size);
+                        file_content.push_back(std::move(elem));
+                    }
+
+                    handler_.close();
+
+                    return file_content;
+                }
+
+                return nullptr;
             }
 
             template <typename T>
