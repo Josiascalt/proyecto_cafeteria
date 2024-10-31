@@ -20,7 +20,12 @@ namespace catalogue {
         using namespace domain::compound_types::final_types;
         
         namespace exceptions {
-            struct ValidationPathError {};
+            namespace paths {
+                struct ValidationPathError {};
+            } //namespace paths
+            namespace database {
+                struct ValidationDataError{};
+            } //namespace database
         } //namespace exceptions
         
         /*
@@ -60,7 +65,7 @@ namespace catalogue {
                 return *this;
             }
         };
-        
+
         struct MetadataPaths {
             fs::path queue;
 
@@ -115,16 +120,25 @@ namespace catalogue {
                 auto queue = DeserializeFile<FinalTypes>(metadata_.queue);
                 
                 //Data
-                auto names_sizes = DeserializeFile<Size>(data_.name_data.sizes);
-                auto names = DeserializeFile<domain::components::Name>(data_.name_data.data, names_sizes);
-                auto identifiers_sizes = DeserializeFile<Size>(data_.identifier_data.sizes);
-                auto identifiers = DeserializeFile<domain::components::Identifier>(data_.identifier_data.data, identifiers_sizes);
-                //auto groups = DeserializeFile<domain::components::Group>(data_.gender_data);
-                auto genders = DeserializeFile<domain::components::Gender>(data_.gender_data);
+                DataCollection data_collection;
+
+                data_collection.names = DeserializeFile<domain::components::Name>(data_.name_data.data, DeserializeFile<Size>(data_.name_data.sizes));
+                data_collection.identifiers = DeserializeFile<domain::components::Identifier>(data_.identifier_data.data, DeserializeFile<Size>(data_.identifier_data.sizes));
+                data_collection.groups = DeserializeFile<domain::components::Group>(data_.group_data);
+                data_collection.genders = DeserializeFile<domain::components::Gender>(data_.gender_data);
                 
-                /*if (elem.GetTypeName() == FinalTypes::TypeNames::STUDENT) {
-                    catalogue_.AddUser(CreateObject<Student>());
-                }*/ 
+                if (queue) {
+                    int index = 0;
+                    for (auto elem : *queue) {
+                        if (elem.GetTypeName() == FinalTypes::TypeNames::STUDENT) {
+                            catalogue_.AddUser(CreateObject<Student>(data_collection, index));
+                        } 
+                        index++;
+                    }
+                }
+                
+
+                
 
                 return true;
             }
@@ -133,6 +147,13 @@ namespace catalogue {
 
         private: //Private member fuctions
             using Size = int;
+
+            struct DataCollection {
+                std::unique_ptr<std::vector<domain::components::Name>> names;
+                std::unique_ptr<std::vector<domain::components::Identifier>> identifiers;
+                std::unique_ptr<std::vector<domain::components::Group>> groups;
+                std::unique_ptr<std::vector<domain::components::Gender>> genders;
+            };
             
             bool SerializeMetadata(FinalTypes* obj) {
                 return WriteInBinary(metadata_.queue, obj);
@@ -207,33 +228,41 @@ namespace catalogue {
             }
             
             template <typename T>
-            T CreateObject() {
+            T CreateObject(const DataCollection& data, int index) {
                 T obj;
 
                 auto layout = obj.GetComponents();
 
                 if (layout.has_name) {
-                    int size = 0;
-                    ReadInBinary(data_.name_data.sizes, &size);
-
-                    obj.name.resize(size);
-                    ReadInBinary(data_.name_data.data, obj.name.data(), size);
+                    if (data.names) {
+                        obj.name = std::move(data.names -> at(index));
+                    } else {
+                        throw exceptions::database::ValidationDataError{};
+                    }
                 }
                 
                 if (layout.has_identifier) {
-                    int size;
-                    ReadInBinary(data_.identifier_data.sizes, &size);
-
-                    obj.identifier.resize(size);
-                    ReadInBinary(data_.identifier_data.data, obj.identifier.data(), size);
+                    if (data.identifiers) {
+                        obj.identifier = std::move(data.identifiers -> at(index));
+                    } else {
+                        throw exceptions::database::ValidationDataError{};
+                    }
                 }
 
                 if (layout.has_group) {
-                    ReadInBinary(data_.group_data, &obj.group);
+                    if (data.groups) {
+                        obj.group = std::move(data.groups -> at(index));
+                    } else {
+                        throw exceptions::database::ValidationDataError{};
+                    }
                 }
 
                 if (layout.has_gender) {
-                    ReadInBinary(data_.gender_data, &obj.gender);
+                    if (data.genders) {
+                        obj.gender = std::move(data.genders -> at(index));
+                    } else {
+                        throw exceptions::database::ValidationDataError{};
+                    }
                 }
 
                 return obj;

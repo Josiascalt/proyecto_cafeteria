@@ -43,10 +43,10 @@ int main() {
     catalogue::file_handler::DatabaseHandler database(catalogue, METADATA_PATHS, DATA_PATHS);
 
     database.Deserialize();
-    //auto item = catalogue.GetUserByIdentifier("JCA0109"s);
-    //std::cout << (item ? item -> identifier : "none") << '\n';
+    auto item = catalogue.GetUserByIdentifier("LAN01009"s);
+    std::cout << (item ? item -> identifier : "none") << '\n';
 
-    while (true) {
+    /*while (true) {
         std::string input;
         std::getline(std::cin, input);
         if (input == "ADD") {
@@ -54,13 +54,25 @@ int main() {
                                                                                         .SetGroup(catalogue::domain::components::Group::TAC::BILINGUAL_BUSINESS_DEPARTMENT)
                                                                                         .SetGender(catalogue::domain::components::Gender::MALE)
                                                                                         .SetIdentifier("JCA0109"s));
+            database.Serialize(catalogue::domain::compound_types::final_types::Student{}.SetName("Liliia"s)
+                                                                                        .SetGroup(catalogue::domain::components::Group::TAC::MUSIC_DEPARTMENT)
+                                                                                        .SetGender(catalogue::domain::components::Gender::FEMALE)
+                                                                                        .SetIdentifier("LIL0109"s));
+            database.Serialize(catalogue::domain::compound_types::final_types::Student{}.SetName("Lancelot"s)
+                                                                                        .SetGroup(catalogue::domain::components::Group::TAIS::NINTH_GRADE)
+                                                                                        .SetGender(catalogue::domain::components::Gender::MALE)
+                                                                                        .SetIdentifier("LAN0109"s));
+            database.Serialize(catalogue::domain::compound_types::final_types::Student{}.SetName("Odette"s)
+                                                                                        .SetGroup(catalogue::domain::components::Group::TAA::SECOND_GRADE)
+                                                                                        .SetGender(catalogue::domain::components::Gender::FEMALE)
+                                                                                        .SetIdentifier("ODD0109"s));
         } else if (input.empty() || input == "STOP") {
             std::cout << "Thanks! Bye!\n";
             break;
         } else {
             std::cout << "Student\n";
         }
-    }
+    }*/
 
     std::cout << "Success!"sv;
 

@@ -88,9 +88,9 @@ namespace catalogue {
                         const std::unordered_map<FinalTypes::TypeNames, components::Composition> TYPE_TO_COMPONENTS = 
                         {
                             {FinalTypes::TypeNames::STUDENT, components::Composition{}.SetHasName(true)
-                                                            .SetHasIdentifier(true)
-                                                            .SetHasGender(true)
-                                                            .SetHasGroup(true)
+                                                                                      .SetHasIdentifier(true)
+                                                                                      .SetHasGender(true)
+                                                                                      .SetHasGroup(true)
                             }
                         };
                         

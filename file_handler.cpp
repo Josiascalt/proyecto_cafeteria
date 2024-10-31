@@ -20,7 +20,7 @@ namespace catalogue {
                 if (path.has_extension()) {
                     std::ofstream new_file(path);
                     if (!new_file) {
-                        throw exceptions::ValidationPathError{};
+                        throw exceptions::paths::ValidationPathError{};
                     }
                 } else {
                     fs::create_directory(path);
