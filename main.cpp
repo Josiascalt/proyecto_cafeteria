@@ -27,10 +27,10 @@ int main() {
 
     //Root Directory
     const auto ROOT_PATH = std::filesystem::current_path();
-    const auto TEMP_DIRECTORY = catalogue::file_handler::ValidatePath(ROOT_PATH / "MyOutput"_p);
+    const auto TEMP_DIRECTORY = catalogue::file_handler::CreatePathObject("MyOutput", ROOT_PATH);
     //Subdirectories
-    const auto RECORD_DIRECTORY = catalogue::file_handler::ValidatePath(TEMP_DIRECTORY / "Records"_p);
-    const auto DATA_DIRECTORY = catalogue::file_handler::ValidatePath(TEMP_DIRECTORY / "Data"_p);
+    const auto RECORD_DIRECTORY = catalogue::file_handler::CreatePathObject("Records", TEMP_DIRECTORY);
+    const auto DATA_DIRECTORY = catalogue::file_handler::CreatePathObject("Data", TEMP_DIRECTORY);
     
     const auto METADATA_PATHS = catalogue::file_handler::MetadataPaths{}.SetQueue(DATA_DIRECTORY / "queue.mdat"_p);
 
@@ -43,7 +43,7 @@ int main() {
     catalogue::file_handler::DatabaseHandler database(catalogue, METADATA_PATHS, DATA_PATHS);
 
     database.Deserialize();
-    auto item = catalogue.GetUserByIdentifier("LAN01009"s);
+    auto item = catalogue.GetUserByIdentifier("LAN0109"s);
     std::cout << (item ? item -> identifier : "none") << '\n';
 
     /*while (true) {

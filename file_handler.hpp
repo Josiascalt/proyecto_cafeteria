@@ -75,7 +75,7 @@ namespace catalogue {
             }
         };
 
-        static fs::path ValidatePath(const fs::path&& path_to_validate);
+        static fs::path CreatePathObject(const char* path_to_validate, const fs::path parent_path);
 
         //template <typename Type>
        class DatabaseHandler {
@@ -120,7 +120,7 @@ namespace catalogue {
                 auto queue = DeserializeFile<FinalTypes>(metadata_.queue);
                 
                 //Data
-                DataCollection data_collection;
+                DataCollections data_collection;
 
                 data_collection.names = DeserializeFile<domain::components::Name>(data_.name_data.data, DeserializeFile<Size>(data_.name_data.sizes));
                 data_collection.identifiers = DeserializeFile<domain::components::Identifier>(data_.identifier_data.data, DeserializeFile<Size>(data_.identifier_data.sizes));
@@ -137,9 +137,6 @@ namespace catalogue {
                     }
                 }
                 
-
-                
-
                 return true;
             }
 
@@ -148,7 +145,7 @@ namespace catalogue {
         private: //Private member fuctions
             using Size = int;
 
-            struct DataCollection {
+            struct DataCollections {
                 std::unique_ptr<std::vector<domain::components::Name>> names;
                 std::unique_ptr<std::vector<domain::components::Identifier>> identifiers;
                 std::unique_ptr<std::vector<domain::components::Group>> groups;
@@ -228,7 +225,7 @@ namespace catalogue {
             }
             
             template <typename T>
-            T CreateObject(const DataCollection& data, int index) {
+            T CreateObject(const DataCollections& data, int index) {
                 T obj;
 
                 auto layout = obj.GetComponents();

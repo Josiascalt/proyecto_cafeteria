@@ -14,8 +14,8 @@ namespace catalogue {
         
         
 
-        fs::path ValidatePath(const fs::path&& path_to_validate) {
-            auto path = std::move(path_to_validate);
+        fs::path CreatePathObject(const char* path_to_validate, const fs::path parent_path = ""_p) {
+            fs::path path = parent_path / fs::path(path_to_validate);
             if (!std::filesystem::exists(path)) {
                 if (path.has_extension()) {
                     std::ofstream new_file(path);
