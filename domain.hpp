@@ -23,6 +23,7 @@ namespace catalogue {
             | | | | | | | | | |
             v v v v v v v v v v
         */
+
         namespace components {
             using Name = std::string;
 
