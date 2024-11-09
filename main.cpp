@@ -43,8 +43,6 @@ int main() {
     catalogue::file_handler::DatabaseHandler database(catalogue, METADATA_PATHS, DATA_PATHS);
 
     database.Deserialize();
-    auto item = catalogue.GetUserByIdentifier("LAN0109"s);
-    std::cout << (item ? item -> identifier : "none") << '\n';
 
     /*while (true) {
         std::string input;

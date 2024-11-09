@@ -1,27 +1,41 @@
+#pragma once
+
 #include <string>
 #include <string_view>
-#include <vector>
+#include <list>
 #include <unordered_map>
 #include <utility>
+#include <optional>
 
 namespace log {
+    namespace exceptions {
+        struct AppendingLoginError {};
+    } // namespace exceptions
 
-    struct LoginData {
+    struct Login {
         std::string identifier;
         std::string password;
 
 
-        LoginData& SetIdentifier(std::string value) {
+        Login& SetIdentifier(std::string value) {
             identifier = std::move(value);
             return *this;
         }
 
-        LoginData& SetPassword(std::string value) {
+        Login& SetPassword(std::string value) {
             password = std::move(value);
             return *this;
         }
+
+        bool operator==(const Login& other) const {
+            this -> identifier == other.identifier;
+            this -> password == other.password;
+        }
     };
 
+    static inline bool operator!=(const Login& lhs, const Login& rhs) {
+        return !(lhs == rhs);
+    }
 
     class Log {
     public:
@@ -33,13 +47,25 @@ namespace log {
             NO_ACCESS
         };
 
-        Log();
+        struct LoginData {
+            Login* login;
+            Privileges privileges;
+        };
 
+    public:
+        Log() = default;
+
+        void AddLogin(Login login, Privileges privileges = Privileges::NO_ACCESS) {
+            logins_.push_back(std::move(login)); 
+            auto& last_added_elem = logins_.back();
+            identifier_to_logindata_[last_added_elem.identifier] = {&last_added_elem, privileges};
+        }
+
+        bool MatchLogin();
 
     private:
-        std::vector<LoginData> logins_;
-        std::unordered_map<std::string_view, LoginData*> identifier_to_logindata_;
-        std::unordered_map<std::string_view, Privileges> identifier_to_privileges_;
+        std::list<Login> logins_;
+        std::unordered_map<std::string_view, LoginData> identifier_to_logindata_;
     };
 
 } //namespace log
