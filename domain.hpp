@@ -25,82 +25,141 @@ namespace catalogue {
         */
 
         namespace components {
-            using Name = std::string;
+            namespace types {
+                using Name = std::string;
 
-            using Identifier = std::string;
+                using Identifier = std::string;
 
-            enum class Gender : bool {
-                MALE,
-                FEMALE
-            };
-
-            class Group {
-            public:  
-                enum class TAA : char {
-                    MONOSTATE,
-                    FIRST_GRADE,
-                    SECOND_GRADE,
-                    THIRD_GRADE
-                };
-
-                enum class TAC : char {
-                    MONOSTATE,
-                    BILINGUAL_BUSINESS_DEPARTMENT,
-                    HEALTH_EDUCATION_DEPARTMENT,
-                    MUSIC_DEPARTMENT,
-                    THEOLOGY_DEPARTMENT
-                };
-
-                enum class TAIS : char {
-                    MONOSTATE,
-                    SEVENTH_GRADE,
-                    EIGHTH_GRADE,
-                    NINTH_GRADE,
-                    TENTH_GRADE,
-                    ELEVENTH_GRADE,
-                    TWELFTH_GRADE
+                enum class Gender : bool {
+                    MALE,
+                    FEMALE
                 };
                 
-                Group() = default;
+                class Group {
+                public:  
+                    enum class TAA : char {
+                        MONOSTATE,
+                        FIRST_GRADE,
+                        SECOND_GRADE,
+                        THIRD_GRADE
+                    };
 
-                template <class GroupName>
-                Group(GroupName group) 
-                : group_(group) 
-                {
+                    enum class TAC : char {
+                        MONOSTATE,
+                        BILINGUAL_BUSINESS_DEPARTMENT,
+                        HEALTH_EDUCATION_DEPARTMENT,
+                        MUSIC_DEPARTMENT,
+                        THEOLOGY_DEPARTMENT
+                    };
+
+                    enum class TAIS : char {
+                        MONOSTATE,
+                        SEVENTH_GRADE,
+                        EIGHTH_GRADE,
+                        NINTH_GRADE,
+                        TENTH_GRADE,
+                        ELEVENTH_GRADE,
+                        TWELFTH_GRADE
+                    };
+                    
+                    Group() = default;
+
+                    template <class GroupName>
+                    Group(GroupName group) 
+                    : group_(group) 
+                    {
+                    }
+
+                    template <class GroupName>
+                    Group& operator=(GroupName group) {
+                        group_ = group;
+                        return *this;
+                    }
+
+                    bool IsTAC() const;
+                    bool IsTAIS() const;
+                    bool IsTAA() const;
+                    TAC GetAsTAC() const;
+                    TAIS GetAsTAIS() const;
+                    TAA GetAsTAA() const;
+
+                    bool operator==(const Group& other) const;
+                    bool operator!=(const Group& other) const;
+
+                private:
+                    std::variant<TAC, TAIS, TAA> group_;
+                };
+            
+            } //namespace types
+
+            struct Nameable {
+                types::Name value;
+            protected:
+                virtual ~Nameable() = default;
+            };
+
+            //struct Person's helper struct to enable named parameter idiom
+            template <typename Owner>
+            struct NameablePathProps : Nameable {
+                Owner& SetName(types::Name name) {
+                    this -> value = std::move(name);
+                    return static_cast<Owner&>(*this);
                 }
+            protected:
+                virtual ~NameablePathProps() = default;
+            };
 
-                template <class GroupName>
-                Group& operator=(GroupName group) {
-                    group_ = group;
-                    return *this;
+            struct Identifiable {
+                types::Identifier value;
+            protected:
+                virtual ~Identifiable() = default;
+            };
+
+            //struct Person's helper struct to enable named parameter idiom
+            template <typename Owner>
+            struct IdentifiablePathProps : Identifiable {
+                Owner& SetIdentifier(types::Identifier identifier) {
+                    this -> value = std::move(identifier);
+                    return static_cast<Owner&>(*this);
                 }
+            protected:
+                virtual ~IdentifiablePathProps() = default;
+            };
 
-                bool IsTAC() const;
-                bool IsTAIS() const;
-                bool IsTAA() const;
-                TAC GetAsTAC() const;
-                TAIS GetAsTAIS() const;
-                TAA GetAsTAA() const;
+            struct Genderable {
+                types::Gender value;
+            protected:
+                virtual ~Genderable() = default;
+            };
 
-                bool operator==(const Group& other) const;
-                bool operator!=(const Group& other) const;
-
-            private:
-                std::variant<TAC, TAIS, TAA> group_;
+            //struct Person's helper struct to enable named parameter idiom
+            template <typename Owner>
+            struct GenderablePathProps : Genderable {
+                Owner& SetGender(types::Gender gender) {
+                    this -> value = gender;
+                    return static_cast<Owner&>(*this);
+                }
+            protected:
+                virtual ~GenderablePathProps() = default;
             };
             
-            /*This struct should contain a has-version of all the datatypes declared above*/
-            struct Composition {
-                Composition& SetHasName (bool value);
-                Composition& SetHasIdentifier (bool value);
-                Composition& SetHasGender(bool value);
-                Composition& SetHasGroup(bool value);
-
-                bool has_name = false;
-                bool has_identifier = false;
-                bool has_gender = false;
-                bool has_group = false;
+            struct Groupable {
+                types::Group value;
+            protected:
+                virtual ~Groupable() = default;
             };
+
+            //struct Person's helper struct to enable named parameter idiom
+            template <typename Owner>
+            struct GroupablePathProps : Groupable {
+                Owner& SetGroup(types::Group group) {
+                    this -> value = group;
+                    return static_cast<Owner&>(*this);
+                }
+            protected:
+                virtual ~GroupablePathProps() = default;
+            };
+            
         } //namespace components 
 
         /*
@@ -114,57 +173,6 @@ namespace catalogue {
         */
 
         namespace compound_types {
-            //struct-interface
-            struct Person {
-                components::Name name;
-                components::Gender gender;
-            protected:
-                virtual ~Person() = default;
-            };
-
-            //struct Person's helper struct to enable named parameter idiom
-            template <typename Owner>
-            struct PersonPathProps : Person {
-                Owner& SetName(components::Name n) {
-                    name = std::move(n);
-                    return static_cast<Owner&>(*this);
-                }
-                
-                Owner& SetGender(components::Gender g) {
-                    gender = g;
-                    return static_cast<Owner&>(*this);
-                }
-
-            protected:
-                virtual ~PersonPathProps() = default;
-            };
-
-            //struct-interface
-            struct User {
-                components::Identifier identifier;
-                components::Group group;
-            protected:
-                virtual ~User() = default;
-            };
-
-            //struct User's helper struct to enable named parameter idiom
-            template <typename Owner>
-            struct UserPathProps : User {
-                Owner& SetIdentifier(components::Identifier i) {
-                    identifier = std::move(i);
-                    return static_cast<Owner&>(*this);
-                }
-                
-                template <typename GroupType>
-                Owner& SetGroup(GroupType g) {
-                    group = g;
-                    return static_cast<Owner&>(*this);
-                }
-                
-            protected:
-                virtual ~UserPathProps() = default;
-            };
-
             /*
                 Every single final class/struct should be declared in the namespace final_types.
                 All final types should he under the FinalTypes interface.
@@ -173,32 +181,20 @@ namespace catalogue {
                 v v v v v v v v v v
             */
 
-            namespace final_types {
-                //class interface
-                class FinalTypes {
-                public:
-                    enum class TypeNames : char;
-                    
-                    FinalTypes() = default;
-                    explicit FinalTypes(TypeNames);
+            using namespace components;
 
-                    TypeNames GetTypeName() const;
-                    components::Composition GetComponents() const;
-                private:
-                    TypeNames typename_;
-                };
+            enum class FinalTypes : char {
+                STUDENT
+            };
+                
+            class Student final : public NameablePathProps<Student>
+                                , public GenderablePathProps<Student> 
+                                , public IdentifiablePathProps<Student>
+                                , public GroupablePathProps<Student> {
+            public:
+                Student() = default;
+            };
 
-                //Final class
-                class Student final : public FinalTypes, public PersonPathProps<Student>, public UserPathProps<Student>{
-                public:
-                    Student();
-                };
-
-                enum class FinalTypes::TypeNames : char {
-                    STUDENT
-                };
-
-            } //namespace final_types
         } //namespace compound_types         
     } // namespace domain
 } // namespace catalogue

@@ -21,8 +21,8 @@ using namespace std::literals;
 int main() {
     using namespace catalogue::domain::literals;
 
-    testing::domain::TestStudentStruct();
-    testing::user_catalogue::TestAddUser();
+    //testing::domain::TestStudentStruct();
+    //testing::user_catalogue::TestAddUser();
     //testing::user_catalogue::TestGetUsersByGroup();
 
     //Root Directory

@@ -16,8 +16,8 @@ namespace catalogue {
     namespace file_handler {
         namespace fs = std::filesystem;
         using namespace domain::literals;
-        using namespace domain::components;
-        using namespace domain::compound_types::final_types;
+        using namespace domain::components::types;
+        using namespace domain::compound_types;
         
         namespace exceptions {
             namespace paths {
@@ -113,7 +113,7 @@ namespace catalogue {
             }
 
             bool Deserialize() {
-                using namespace domain::compound_types::final_types;
+                using namespace domain::compound_types;
                 using namespace domain::components;
 
                 //Metadata

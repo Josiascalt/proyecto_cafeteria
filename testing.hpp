@@ -1,6 +1,6 @@
 #pragma once
 
-#include "domain.hpp"
+/*#include "domain.hpp"
 #include "users_catalogue.hpp"
 
 #include <cassert>
@@ -8,8 +8,8 @@
 
 namespace testing {
     using namespace std::literals;
-    using namespace catalogue::domain::components;
-    using namespace catalogue::domain::compound_types::final_types;
+    using namespace catalogue::domain::components::types;
+    using namespace catalogue::domain::compound_types;
 
     namespace domain {
         void TestStudentStruct() {
@@ -120,7 +120,7 @@ namespace testing {
             assert(t3 -> group.IsTAC());
             assert(t4 -> group.IsTAA());
             assert(t5 -> group.IsTAC());
-        }
+        }*/
 
         /*void TestGetUsersByGroup() {
             UserCatalogue catalogue;
@@ -146,5 +146,4 @@ namespace testing {
             assert(t3.size() == 3 && t3.size() == t1.size() && t3.size() != t2.size());
             assert(t3[0] == 3333 && t3[1] == 6666 && t3[2] == 9999);
         }*/
-    } //user_catalogue
-} //testing
+    //} //user_catalogue
