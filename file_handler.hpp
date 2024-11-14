@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 
 #include "domain.hpp"
 #include "users_catalogue.hpp"
@@ -26,7 +26,7 @@ namespace catalogue {
             namespace database {
                 struct ValidationDataError{};
             } //namespace database
-        } //namespace exceptions
+        } //namespace exceptions*/
         
         /*
             The struct DataPaths depends on the datatypes of the struct Composition 
@@ -34,7 +34,7 @@ namespace catalogue {
             that storages a datatype from struct Composition.
         */
 
-        struct DataPaths {
+        /*struct DataPaths {
             struct SizedData {
                 fs::path data;
                 fs::path sizes;
@@ -276,7 +276,7 @@ namespace catalogue {
         struct Entry {
             std::string time;
             domain::compound_types::User* user;
-        };
+        };*/
 
         /*class RecordHandler {
         public:
@@ -284,5 +284,5 @@ namespace catalogue {
         private:
             std::unordered_map<domain::Group, std::deque<const Entry>> records_;
         };*/
-    } //namespace file_handler
-}//namespace catalogue
+    //} //namespace file_handler
+//}//namespace catalogue

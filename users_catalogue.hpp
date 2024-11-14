@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 
 #include "domain.hpp"
 
@@ -33,4 +33,4 @@ namespace catalogue {
             std::unordered_map<std::string_view, Index> identifier_to_user_;
         };
     } //namespace database
-} //namespace catalogue
+} //namespace catalogue*/

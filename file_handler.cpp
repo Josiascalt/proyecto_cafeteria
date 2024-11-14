@@ -1,4 +1,4 @@
-#include "file_handler.hpp"
+/*#include "file_handler.hpp"
 #include "domain.hpp"
 
 #include <fstream>
@@ -41,4 +41,4 @@ namespace catalogue {
         }
         
     } //namespace file_handler
-} //namespace catalogue
+} //namespace catalogue*/

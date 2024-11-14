@@ -1,10 +1,10 @@
 #include "domain.hpp"
 #include "domain.cpp"
-#include "users_catalogue.hpp"
-#include "users_catalogue.cpp"
-#include "file_handler.hpp"
-#include "file_handler.cpp"
-#include "testing.hpp"
+//#include "users_catalogue.hpp"
+//#include "users_catalogue.cpp"
+//#include "file_handler.hpp"
+//#include "file_handler.cpp"
+//#include "testing.hpp"
 
 #include <iostream>
 #include <string_view>
@@ -25,7 +25,7 @@ int main() {
     //testing::user_catalogue::TestAddUser();
     //testing::user_catalogue::TestGetUsersByGroup();
 
-    //Root Directory
+    /*//Root Directory
     const auto ROOT_PATH = std::filesystem::current_path();
     const auto TEMP_DIRECTORY = catalogue::file_handler::CreatePathObject("MyOutput", ROOT_PATH);
     //Subdirectories
@@ -37,14 +37,14 @@ int main() {
     const auto DATA_PATHS = catalogue::file_handler::DataPaths{}.SetNameData({DATA_DIRECTORY / "names.dat"_p, DATA_DIRECTORY / "namessz.dat"_p})
                                                                 .SetIdentifierData({DATA_DIRECTORY / "identifiers.dat"_p, DATA_DIRECTORY / "identifierssz.dat"_p})
                                                                 .SetGenderData(DATA_DIRECTORY / "genders.dat"_p)
-                                                                .SetGroupData(DATA_DIRECTORY / "groups.dat"_p);
+                                                                .SetGroupData(DATA_DIRECTORY / "groups.dat"_p);*/
 
-    catalogue::database::UserCatalogue catalogue;
-    catalogue::file_handler::DatabaseHandler database(catalogue, METADATA_PATHS, DATA_PATHS);
+    //catalogue::database::UserCatalogue catalogue;
+    //catalogue::file_handler::DatabaseHandler database(catalogue, METADATA_PATHS, DATA_PATHS);
 
-    database.Deserialize();
-    auto item = catalogue.GetUserByIdentifier("LAN0109"s);
-    std::cout << (item ? item -> identifier : "none") << '\n';
+    //database.Deserialize();
+    //auto item = catalogue.GetUserByIdentifier("LAN0109"s);
+    //std::cout << (item ? item -> identifier : "none") << '\n';
 
     /*while (true) {
         std::string input;

@@ -1,4 +1,4 @@
-#include "users_catalogue.hpp"
+/*#include "users_catalogue.hpp"
 
 namespace catalogue {
     namespace database {
@@ -11,4 +11,4 @@ namespace catalogue {
         }
 
     } //namespace database
-} //namespace catalogue
+} //namespace catalogue*/
