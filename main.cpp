@@ -76,9 +76,11 @@ int main() {
         }
     }*/
 
+    auto str = "   "s;
+    encoder::Item item(str.begin(), str.end());
+    std::cout << item.GetValue() << '\n';
+    std::cout << item.Decode().size() << '\n';
     std::cout << "Success!"sv;
-
-    //Josias was here
     
     return 0;
 }

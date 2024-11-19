@@ -12,7 +12,7 @@ namespace encoder {
         using Type = uint64_t;
 
         static const int CAPACITY = 9;
-        static const int RELATIVE_POSITION = 32;
+        static const int RELATIVE_POSITION = 31;
 
         Item() = default;
 
@@ -30,7 +30,7 @@ namespace encoder {
         Item& operator=(const Item& other) = delete; 
 
         Type GetValue() const;
-        std::string DecodeValue() const;
+        std::string Decode() const;
     private:
         Type value_ = 0;
     };
