@@ -10,46 +10,35 @@
 
 namespace encoder {
 
-    class Product {
-    private:
-        using Type = u_int64_t;
+    class Item {
     public:
-        static const int CAPACITY = 18;
+        using Type = uint64_t;
+
+        static const int CAPACITY = 9;
         static const int RELATIVE_POSITION = 32;
-        static const int ELEM_SIZE = 2;
 
-        Product() = default;
-
-        template <typename Iter>
-        static Type EncodeElem(const Iter& elem, int step) {
-            return static_cast<Type>(std::pow(10, step * ELEM_SIZE) * (static_cast<int>(*elem) - RELATIVE_POSITION));
-        }
-
-        static char DecodeElem(Type value, int step) {
-            return static_cast<char>((value % Type(std::pow(10, step * ELEM_SIZE))) + RELATIVE_POSITION);
-        }
+        Item() = default;
 
         template <typename Iter>
-        void SetValue(Iter beg, Iter end) {
+        Item(Iter beg, Iter end) {
             int step = 0;
             for (; beg != end; beg++) {
-                value_ += EncodeElem(beg, step++);
+                value_ += static_cast<Type>(std::pow(100, step++) * (static_cast<int>(*beg) - RELATIVE_POSITION));
             }
         }
 
-        Type GetValue() const {
-            return value_;
-        }
-        
-        std::string DecodeValue() const {
-            
-        }
+        Item(Item&& other) = default;
+        Item(const Item& other) = delete;
+        Item& operator=(Item&& other) = default; 
+        Item& operator=(const Item& other) = delete; 
 
+        Type GetValue() const;
+        std::string DecodeValue() const;
     private:
         Type value_ = 0;
     };
     
-    std::ostream& operator<<(std::ostream& out, const Product& item) {
+    std::ostream& operator<<(std::ostream& out, const Item& item) {
         out << item.GetValue();
         return out;
     }
