@@ -1,10 +1,10 @@
 #pragma once
 
 #include <string>
-#include <array>
 #include <cmath>
 #include <cstdint>
-
+#include <vector>
+#include <iterator>
 
 namespace encoder {
     class Item {
@@ -34,5 +34,23 @@ namespace encoder {
     private:
         Type value_ = 0;
     };
+
+    using EncodedData = std::vector<Item>;
     
+    inline EncodedData EncodeData(const std::string& data) {
+        EncodedData result;
+        int size_in_items = std::ceil(data.size() / double(Item::CAPACITY));
+        result.reserve(size_in_items);
+
+        auto begin = data.begin();
+        for (int i = 0; i < size_in_items - 1; i++) {
+            auto end = begin + Item::CAPACITY;
+            result.emplace_back(begin, end);
+            begin = end;
+        }
+        
+        result.emplace_back(begin, data.end());
+
+        return result;
+    }
 } // namespace encoder
