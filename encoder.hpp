@@ -5,62 +5,54 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
+#include <iostream>
+#include <utility>
 
 namespace encoder {
-    static const int RELATIVE_POSITION = 32;
 
-    static const int UINT64_CAPACITY = 9;
-    static const int UINT64_IN_TYPE128 = 2;
-    using Type128 = std::array<uint64_t, UINT64_IN_TYPE128>;
+    class Product {
+    private:
+        using Type = u_int64_t;
+    public:
+        static const int CAPACITY = 18;
+        static const int RELATIVE_POSITION = 32;
+        static const int ELEM_SIZE = 2;
 
-    //String encoder in 16 bytes - any char from 32 - 126
-    Type128 Encode128(const std::string& str) {
-        Type128 result({0,0});
-        auto result_index = 0;
-        const int size = str.size();
-        const int digit_position_step = 2;
+        Product() = default;
 
-        int digit_position = 0;
-        for (int i = 0; i < size;) {
-            auto step = std::min(UINT64_CAPACITY, size - i);
-
-            if (step == UINT64_CAPACITY) {
-                result[result_index] += static_cast<uint64_t>(std::pow(10, digit_position) * (static_cast<int>(str[i++]) - RELATIVE_POSITION));
-                digit_position += digit_position_step;
-
-                result[result_index] += static_cast<uint64_t>(std::pow(10, digit_position) * (static_cast<int>(str[i++]) - RELATIVE_POSITION));
-                digit_position += digit_position_step;
-
-                result[result_index] += static_cast<uint64_t>(std::pow(10, digit_position) * (static_cast<int>(str[i++]) - RELATIVE_POSITION));
-                digit_position += digit_position_step;
-
-                result[result_index] += static_cast<uint64_t>(std::pow(10, digit_position) * (static_cast<int>(str[i++]) - RELATIVE_POSITION));
-                digit_position += digit_position_step;
-
-                result[result_index] += static_cast<uint64_t>(std::pow(10, digit_position) * (static_cast<int>(str[i++]) - RELATIVE_POSITION));
-                digit_position += digit_position_step;
-
-                result[result_index] += static_cast<uint64_t>(std::pow(10, digit_position) * (static_cast<int>(str[i++]) - RELATIVE_POSITION));
-                digit_position += digit_position_step;
-
-                result[result_index] += static_cast<uint64_t>(std::pow(10, digit_position) * (static_cast<int>(str[i++]) - RELATIVE_POSITION));
-                digit_position += digit_position_step;
-
-                result[result_index] += static_cast<uint64_t>(std::pow(10, digit_position) * (static_cast<int>(str[i++]) - RELATIVE_POSITION));
-                digit_position += digit_position_step;
-
-                result[result_index] += static_cast<uint64_t>(std::pow(10, digit_position) * (static_cast<int>(str[i++]) - RELATIVE_POSITION));
-                digit_position += digit_position_step;
-
-                digit_position = 0;
-                result_index++;
-                continue; 
-            }
-
-            result[result_index] += static_cast<uint64_t>(std::pow(10, digit_position) * (static_cast<int>(str[i++]) - RELATIVE_POSITION));
-            digit_position += digit_position_step;
+        template <typename Iter>
+        static Type EncodeElem(const Iter& elem, int step) {
+            return static_cast<Type>(std::pow(10, step * ELEM_SIZE) * (static_cast<int>(*elem) - RELATIVE_POSITION));
         }
 
-        return result;
+        static char DecodeElem(Type value, int step) {
+            return static_cast<char>((value % Type(std::pow(10, step * ELEM_SIZE))) + RELATIVE_POSITION);
+        }
+
+        template <typename Iter>
+        void SetValue(Iter beg, Iter end) {
+            int step = 0;
+            for (; beg != end; beg++) {
+                value_ += EncodeElem(beg, step++);
+            }
+        }
+
+        Type GetValue() const {
+            return value_;
+        }
+        
+        std::string DecodeValue() const {
+            
+        }
+
+    private:
+        Type value_ = 0;
+    };
+    
+    std::ostream& operator<<(std::ostream& out, const Product& item) {
+        out << item.GetValue();
+        return out;
     }
+
+    
 } // namespace encoder
