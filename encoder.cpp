@@ -7,9 +7,9 @@ namespace encoder {
 
             auto encoded_value = item.GetValue();
             for (int step = 0; step < Item::CAPACITY; step++) {
-                Item::Type coeficient = (encoded_value % Item::Type((std::pow(100, step + 1))));
-                result += static_cast<char>((coeficient / std::pow(100, step)) + Item::RELATIVE_POSITION);
-                encoded_value -= coeficient;
+                Item::Type econded_char = (encoded_value % Item::Type((std::pow(100, step + 1))));
+                result += static_cast<char>((econded_char / std::pow(100, step)) + Item::RELATIVE_POSITION);
+                encoded_value -= econded_char;
             }
 
             return result;

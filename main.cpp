@@ -1,6 +1,7 @@
 #include "domain.hpp"
 #include "domain.cpp"
 #include "encoder.hpp"
+#include "encoder.cpp"
 //#include "users_catalogue.hpp"
 //#include "users_catalogue.cpp"
 //#include "file_handler.hpp"

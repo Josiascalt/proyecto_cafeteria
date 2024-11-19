@@ -2,14 +2,11 @@
 
 #include <string>
 #include <array>
-#include <algorithm>
 #include <cmath>
 #include <cstdint>
-#include <iostream>
-#include <utility>
+
 
 namespace encoder {
-
     class Item {
     public:
         using Type = uint64_t;
@@ -37,11 +34,5 @@ namespace encoder {
     private:
         Type value_ = 0;
     };
-    
-    std::ostream& operator<<(std::ostream& out, const Item& item) {
-        out << item.GetValue();
-        return out;
-    }
-
     
 } // namespace encoder
