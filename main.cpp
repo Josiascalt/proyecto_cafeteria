@@ -76,10 +76,9 @@ int main() {
         }
     }*/
 
-    auto str = "   "s;
-    encoder::Item item(str.begin(), str.end());
-    std::cout << item.GetValue() << '\n';
-    std::cout << item.Decode().size() << '\n';
+    auto str = "   efeefe sqdqdVWF WGFDBTSG R GTGw3335"s;
+    auto item = encoder::char32_to_126::EncodeData(str.begin(), str.end(), encoder::char32_to_126::CalcDataSizeInItems(str.size()));
+    std::cout << item.Decode() << '\n';
     std::cout << "Success!"sv;
     
     return 0;
