@@ -37,28 +37,25 @@ namespace encoder {
         Type value_ = 0;
     };
 
-    class EncodedData {
+    class ItemArray {
     public:
         using Data = std::unique_ptr<Item[]>;
 
-        EncodedData() = default;
+        ItemArray() = default;
 
-        EncodedData(Data&& data, size_t size) 
+        ItemArray(Data&& data, size_t size) 
         : data_(std::move(data))
         , size_(size) 
         {
         }
 
-        /*EncodedData(const std::string& str) 
-        {   
-        }*/
+        const Data& GetData() const {
+            return data_;
+        }
 
-        /*template <typename Iter>
-        EncodedData(Iter beg, Iter end) 
-        {
-        }*/
-        
-
+        size_t GetSize() const {
+            return size_;
+        }
 
 
     private:
@@ -71,15 +68,15 @@ namespace encoder {
     }
 
     template <typename InputIter>
-    static EncodedData EncodeData(InputIter beg
+    static ItemArray EncodeData(InputIter beg
                 , InputIter end
                 , const size_t size_in_items) {
         
         if (size_in_items <= 0) {
-            return EncodedData{};
+            return ItemArray{};
         }
 
-        EncodedData::Data data(new Item[size_in_items]);
+        ItemArray::Data data(new Item[size_in_items]);
 
         auto iter_begin = beg;
         for (int i = 0; i < size_in_items - 1; i++) {
@@ -89,8 +86,16 @@ namespace encoder {
         }
 
         data[size_in_items - 1] = Item{iter_begin, end};
+        return ItemArray{std::move(data), size_in_items};
+    }
 
-        return EncodedData{std::move(data), size_in_items};
+    template <typename InputIter, typename OutputIter>
+    static void EncodeDataInTarget(InputIter data_beg
+                         , InputIter data_end
+                         , OutputIter target
+                         , const size_t target_size) {
+
+        /*some code here*/
     }
     
     /*inline Encoder EncodeString(const std::string& data) {
