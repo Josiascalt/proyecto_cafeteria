@@ -37,45 +37,61 @@ namespace encoder {
         Type value_ = 0;
     };
 
-
-    class Encoder {
+    class EncodedData {
     public:
-        Encoder() = default;
+        using Data = std::unique_ptr<Item[]>;
 
-        Encoder(const std::string& str) 
-        : data_(nullptr)
-        {   
-        }
+        EncodedData() = default;
 
-        template <typename Iter>
-        Encoder(Iter beg, Iter end) 
-        : data_(nullptr)
+        EncodedData(Data&& data, size_t size) 
+        : data_(std::move(data))
+        , size_(size) 
         {
         }
 
-        static int CalcDataSizeInItems(int data_size) {
-            return std::ceil(data_size / double(Item::CAPACITY));
-        }
+        /*EncodedData(const std::string& str) 
+        {   
+        }*/
 
-        template <typename OutIter, typename InputIter>
-        static void EncodeData(InputIter beg
-                  , InputIter end
-                  , OutIter target
-                  , int target_capacity) {
+        /*template <typename Iter>
+        EncodedData(Iter beg, Iter end) 
+        {
+        }*/
+        
 
-            auto iter_begin = beg;
-            for (int i = 0; i < target_capacity - 1; i++) {
-                auto iter_end = iter_begin + Item::CAPACITY;
-                *target++ = std::move(Item{iter_begin, iter_end});
-                iter_begin = iter_end;
-            }
 
-            *target = std::move(Item{iter_begin, end});
-        }
 
     private:
-        std::unique_ptr<Item> data_;
+        Data data_ = nullptr;
+        size_t size_ = 0;
     };
+
+    static size_t CalcDataSizeInItems(size_t data_size) {
+        return std::ceil(data_size / double(Item::CAPACITY));
+    }
+
+    template <typename InputIter>
+    static EncodedData EncodeData(InputIter beg
+                , InputIter end
+                , const size_t size_in_items) {
+        
+        if (size_in_items <= 0) {
+            return EncodedData{};
+        }
+
+        EncodedData::Data data(new Item[size_in_items]);
+
+        auto iter_begin = beg;
+        for (int i = 0; i < size_in_items - 1; i++) {
+            auto iter_end = iter_begin + Item::CAPACITY;
+            data[i] = Item{iter_begin, iter_end};
+            iter_begin = iter_end;
+        }
+
+        data[size_in_items - 1] = Item{iter_begin, end};
+
+        return EncodedData{std::move(data), size_in_items};
+    }
     
     /*inline Encoder EncodeString(const std::string& data) {
         Encoder result;
