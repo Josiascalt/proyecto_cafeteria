@@ -81,14 +81,12 @@ namespace encoder {
         }
 
         template <typename InputIter>
-        static ItemArray EncodeData(InputIter data_beg
-                    , InputIter data_end
-                    , const size_t items_count) {
-            
-            if (items_count <= 0) {
+        static ItemArray EncodeData(InputIter data_beg, InputIter data_end) {
+            if (data_beg == data_end) {
                 return ItemArray{};
             }
 
+            const auto items_count = CalcDataSizeInItems(std::distance(data_beg, data_end));
             ItemArray::Data data(new Item[items_count]);
 
             auto beg = data_beg;
@@ -105,29 +103,42 @@ namespace encoder {
 
         template <typename InputIter, typename OutputIter>
         static void EncodeDataInIterable(InputIter data_beg
-                            , InputIter data_end
-                            , OutputIter target
-                            , const size_t target_size) {
-            if (target_size > 0) {
-                auto beg = data_beg;
-                for (int i = 0; i < target_size - 1; i++) {
-                    auto end = beg + Item::CAPACITY;
-                    *target++ = Item{beg, end};
-                    beg = end;
-                }
+                                       , InputIter data_end
+                                       , OutputIter target
+                                       , const size_t target_size) {
 
-                *target = Item{beg, data_end};
+            if (data_beg == data_end || target_size == 0) {
+                return;
             }
+
+            const auto items_count = CalcDataSizeInItems(std::distance(data_beg, data_end));
+
+            const auto size = std::min(items_count, target_size);
+
+            auto beg = data_beg;
+            for (int i = 0; i < size - 1; i++) {
+                auto end = beg + Item::CAPACITY;
+                *target++ = Item{beg, end};
+                beg = end;
+            }
+
+            *target = Item{beg, data_end};
         }
 
         template <typename InputIter>
-        static std::string DecodeDataFromIterable(InputIter beg, InputIter end, size_t items_count) {
+        static std::string DecodeDataFromIterable(InputIter data_beg, InputIter data_end) {
             std::string result;
+
+            if (data_beg == data_end) {
+                return result;
+            }
+
+            const auto items_count = std::distance(data_beg, data_end);
             result.reserve(items_count * Item::CAPACITY);
 
             std::string buffer;
-            for (; beg != end; beg++) {
-                buffer = beg -> Decode();
+            for (; data_beg != data_end; data_beg++) {
+                buffer = data_beg -> Decode();
                 result += buffer;
             }
 
