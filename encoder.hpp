@@ -42,43 +42,17 @@ namespace encoder {
             using Data = std::unique_ptr<Item[]>;
 
             ItemArray() = default;
+            ItemArray(Data&& data, size_t size);
 
-            ItemArray(Data&& data, size_t size) 
-            : data_(std::move(data))
-            , size_(size) 
-            {
-            }
-
-            const Data& GetData() const {
-                return data_;
-            }
-
-            size_t GetSize() const {
-                return size_;
-            }
-
-            std::string Decode() const {
-                std::string result;
-                result.reserve(size_ * Item::CAPACITY);
-
-                std::string buffer;
-                for (size_t index = 0; index < size_; index++) {
-                    buffer = data_[index].Decode();
-                    result += buffer;
-                }
-
-                return result;
-            }
-
-
+            const Data& GetData() const;
+            size_t GetSize() const;
+            std::string Decode() const;
         private:
             Data data_ = nullptr;
             size_t size_ = 0;
         };
 
-        static size_t CalcDataSizeInItems(size_t data_size) {
-            return std::ceil(data_size / double(Item::CAPACITY));
-        }
+        static size_t CalcDataSizeInItems(size_t data_size);
 
         template <typename InputIter>
         static ItemArray EncodeData(InputIter data_beg, InputIter data_end) {
