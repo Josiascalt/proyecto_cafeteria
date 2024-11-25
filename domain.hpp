@@ -1,7 +1,10 @@
 #pragma once
 
+#include "encoder.hpp"
+
 #include <string>
 #include <string_view>
+#include <array>
 #include <utility>
 #include <memory>
 #include <variant>
@@ -26,9 +29,9 @@ namespace catalogue {
 
         namespace components {
             namespace types {
-                using Name = std::string;
+                using Name = std::array<encoder::char32_to_126::Item, 10>;
 
-                using Identifier = std::string;
+                using Identifier = std::array<encoder::char32_to_126::Item, 6>;
 
                 enum class Gender : bool {
                     MALE,

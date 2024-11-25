@@ -66,7 +66,7 @@ namespace encoder {
             ItemArray::Data data(new Item[items_count]);
 
             auto beg = data_beg;
-            for (int i = 0; i < items_count - 1; i++) {
+            for (size_t i = 0; i < items_count - 1; i++) {
                 auto end = beg + Item::CAPACITY;
                 data[i] = Item{beg, end};
                 beg = end;
