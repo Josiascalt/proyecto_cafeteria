@@ -58,9 +58,6 @@ namespace encoder {
         }
 
         // (namespace char32_to_126) functions definition
-        size_t CalcDataSizeInItems(size_t data_size) {
-            return std::ceil(data_size / double(Item::CAPACITY));
-        }
-
+        
     } // namespace char32_to_126
 } //namespace encoder
