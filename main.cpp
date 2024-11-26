@@ -1,7 +1,6 @@
-#include "domain.hpp"
-#include "domain.cpp"
-#include "encoder.hpp"
-#include "encoder.cpp"
+#include "src/domain.cpp"
+#include "src/utilities/encoder.cpp"
+
 //#include "users_catalogue.hpp"
 //#include "users_catalogue.cpp"
 //#include "file_handler.hpp"
@@ -76,7 +75,7 @@ int main() {
         }
     }*/
 
-    auto str = "efeefe sqdqdVWF WGFDBTSG R GTGw3335"s;
+    auto str = "   efeefe sqdqdVWF WGFDBTSG R GTGw3335"s;
     auto item = encoder::ascii::EncodeData(str.begin(), str.end());
     std::cout << item.Decode() << '\n';
     std::cout << "Success!"sv;
