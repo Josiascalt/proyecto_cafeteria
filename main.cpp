@@ -76,8 +76,8 @@ int main() {
         }
     }*/
 
-    auto str = "   efeefe sqdqdVWF WGFDBTSG R GTGw3335"s;
-    auto item = encoder::char32_to_126::EncodeData(str.begin(), str.end());
+    auto str = "efeefe sqdqdVWF WGFDBTSG R GTGw3335"s;
+    auto item = encoder::ascii::EncodeData(str.begin(), str.end());
     std::cout << item.Decode() << '\n';
     std::cout << "Success!"sv;
     

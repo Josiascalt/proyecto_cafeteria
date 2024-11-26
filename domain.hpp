@@ -29,9 +29,9 @@ namespace catalogue {
 
         namespace components {
             namespace types {
-                using Name = std::array<encoder::char32_to_126::Item, 10>;
+                using Name = std::array<encoder::ascii::Item, 10>;
 
-                using Identifier = std::array<encoder::char32_to_126::Item, 6>;
+                using Identifier = std::array<encoder::ascii::Item, 6>;
 
                 enum class Gender : bool {
                     MALE,

@@ -1,7 +1,7 @@
 #include "encoder.hpp"
 
 namespace encoder {
-    namespace char32_to_126 {
+    namespace ascii {
         namespace detail {
             static std::string DecodeItem(const Item& item) {
                 std::string result;
@@ -57,7 +57,7 @@ namespace encoder {
             return result;
         }
 
-        // (namespace char32_to_126) functions definition
+        // (namespace ascii) functions definition
         
-    } // namespace char32_to_126
+    } // namespace ascii
 } //namespace encoder

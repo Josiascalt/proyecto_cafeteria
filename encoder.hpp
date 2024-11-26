@@ -8,7 +8,7 @@
 #include <memory>
 
 namespace encoder {
-    namespace char32_to_126 {
+    namespace ascii {
         class Item {
         public:
             using Type = uint64_t;
@@ -120,6 +120,5 @@ namespace encoder {
 
             return result;
         }
-    } // namespace char32_to_126
-    
+    } // namespace ascii
 } // namespace encoder
