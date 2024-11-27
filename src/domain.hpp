@@ -31,7 +31,7 @@ namespace catalogue {
             namespace types {
                 using Name = std::array<encoder::ascii::Item, 10>;
 
-                using Identifier = std::array<encoder::ascii::Item, 6>;
+                using Identifier = size_t;
 
                 enum class Gender : bool {
                     MALE,
@@ -191,8 +191,8 @@ namespace catalogue {
             };
                 
             class Student final : public NameablePathProps<Student>
-                                , public GenderablePathProps<Student> 
                                 , public IdentifiablePathProps<Student>
+                                , public GenderablePathProps<Student> 
                                 , public GroupablePathProps<Student> {
             public:
                 Student() = default;
