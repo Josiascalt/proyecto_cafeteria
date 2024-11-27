@@ -1,9 +1,12 @@
 #include "src/domain.cpp"
+#include "src/file_handler.hpp"
+
 #include "src/utilities/encoder.cpp"
+
 
 //#include "users_catalogue.hpp"
 //#include "users_catalogue.cpp"
-//#include "file_handler.hpp"
+
 //#include "file_handler.cpp"
 //#include "testing.hpp"
 
@@ -26,16 +29,16 @@ int main() {
     //testing::user_catalogue::TestAddUser();
     //testing::user_catalogue::TestGetUsersByGroup();
 
-    /*//Root Directory
+    //Root Directory
     const auto ROOT_PATH = std::filesystem::current_path();
-    const auto TEMP_DIRECTORY = catalogue::file_handler::CreatePathObject("MyOutput", ROOT_PATH);
+    const auto TEMP_DIRECTORY = file_handler::CreatePathObject("MyOutput", ROOT_PATH);
     //Subdirectories
-    const auto RECORD_DIRECTORY = catalogue::file_handler::CreatePathObject("Records", TEMP_DIRECTORY);
-    const auto DATA_DIRECTORY = catalogue::file_handler::CreatePathObject("Data", TEMP_DIRECTORY);
+    const auto RECORD_DIRECTORY = file_handler::CreatePathObject("Records", TEMP_DIRECTORY);
+    const auto DATA_DIRECTORY = file_handler::CreatePathObject("Data", TEMP_DIRECTORY);
     
-    const auto METADATA_PATHS = catalogue::file_handler::MetadataPaths{}.SetQueue(DATA_DIRECTORY / "queue.mdat"_p);
+    /*const auto METADATA_PATHS = file_handler::MetadataPaths{}.SetQueue(DATA_DIRECTORY / "queue.mdat"_p);
 
-    const auto DATA_PATHS = catalogue::file_handler::DataPaths{}.SetNameData({DATA_DIRECTORY / "names.dat"_p, DATA_DIRECTORY / "namessz.dat"_p})
+    const auto DATA_PATHS = file_handler::DataPaths{}.SetNameData({DATA_DIRECTORY / "names.dat"_p, DATA_DIRECTORY / "namessz.dat"_p})
                                                                 .SetIdentifierData({DATA_DIRECTORY / "identifiers.dat"_p, DATA_DIRECTORY / "identifierssz.dat"_p})
                                                                 .SetGenderData(DATA_DIRECTORY / "genders.dat"_p)
                                                                 .SetGroupData(DATA_DIRECTORY / "groups.dat"_p);*/
