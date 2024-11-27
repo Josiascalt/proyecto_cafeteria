@@ -84,8 +84,6 @@ namespace catalogue {
 
             template <typename T>
             bool Serialize(T obj) {
-                auto layout = obj.GetComponents();
-
                 SerializeMetadata(&obj);
                 
                 if (layout.has_name) {
@@ -117,7 +115,7 @@ namespace catalogue {
                 using namespace domain::components;
 
                 //Metadata
-                auto queue = DeserializeFile<FinalTypes>(metadata_.queue);
+                auto queue = DeserializeFile<UserType>(metadata_.queue);
                 
                 //Data
                 DataCollections data_collection;
@@ -130,7 +128,7 @@ namespace catalogue {
                 if (queue) {
                     int index = 0;
                     for (auto elem : *queue) {
-                        if (elem.GetTypeName() == FinalTypes::TypeNames::STUDENT) {
+                        if (elem.GetTypeName() == UserType::TypeNames::STUDENT) {
                             catalogue_.AddUser(CreateObject<Student>(data_collection, index));
                         } 
                         index++;
@@ -152,7 +150,7 @@ namespace catalogue {
                 std::unique_ptr<std::vector<domain::components::Gender>> genders;
             };
             
-            bool SerializeMetadata(FinalTypes* obj) {
+            bool SerializeMetadata(UserType* obj) {
                 return WriteInBinary(metadata_.queue, obj);
             }
 

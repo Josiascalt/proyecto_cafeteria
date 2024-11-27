@@ -104,8 +104,8 @@ namespace catalogue {
             //struct Person's helper struct to enable named parameter idiom
             template <typename Owner>
             struct NameablePathProps : Nameable {
-                Owner& SetName(types::Name name) {
-                    this -> value = std::move(name);
+                Owner& SetName(const std::string& name) {
+                    encoder::ascii::EncodeDataInIterable(name.begin(), name.end(), value.begin(), value.size());
                     return static_cast<Owner&>(*this);
                 }
             protected:
@@ -178,7 +178,7 @@ namespace catalogue {
         namespace compound_types {
             /*
                 Every single final class/struct should be declared in the namespace final_types.
-                All final types should he under the FinalTypes interface.
+                All final types should he under the UserType interface.
                 Final types are the classes/structs available for the user.
                 | | | | | | | | | |
                 v v v v v v v v v v
@@ -186,17 +186,24 @@ namespace catalogue {
 
             using namespace components;
 
-            enum class FinalTypes : char {
-                STUDENT
+            enum class UserType : char {
+                Student
+            };
+
+            //class Interface
+            class User {
+            protected:
+                virtual ~User() = default;
             };
                 
-            class Student final : public NameablePathProps<Student>
+            class Student final : public User
+                                , public NameablePathProps<Student>
                                 , public IdentifiablePathProps<Student>
                                 , public GenderablePathProps<Student> 
                                 , public GroupablePathProps<Student> {
             public:
                 Student() = default;
-            };
+            };  
 
         } //namespace compound_types         
     } // namespace domain
