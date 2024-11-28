@@ -97,6 +97,7 @@ namespace catalogue {
 
             struct Nameable {
                 types::Name value;
+
             protected:
                 virtual ~Nameable() = default;
             };

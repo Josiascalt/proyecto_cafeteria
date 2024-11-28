@@ -1,4 +1,4 @@
-#include <string>
+/*#include <string>
 #include <string_view>
 #include <vector>
 #include <unordered_map>
@@ -42,4 +42,4 @@ namespace log {
         std::unordered_map<std::string_view, Privileges> identifier_to_privileges_;
     };
 
-} //namespace log
+} //namespace log*/

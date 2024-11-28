@@ -1,5 +1,5 @@
 #include "src/domain.cpp"
-#include "src/file_handler.hpp"
+#include "src/data_manager.hpp"
 
 #include "src/utilities/encoder.cpp"
 
@@ -7,7 +7,7 @@
 //#include "users_catalogue.hpp"
 //#include "users_catalogue.cpp"
 
-//#include "file_handler.cpp"
+//#include "catalogue::data_manager.cpp"
 //#include "testing.hpp"
 
 #include <iostream>
@@ -22,6 +22,8 @@ using namespace std::literals;
         "align = "sv << alignof(X) << '\n') 
 
 
+
+
 int main() {
     using namespace catalogue::domain::literals;
 
@@ -30,21 +32,21 @@ int main() {
     //testing::user_catalogue::TestGetUsersByGroup();
 
     //Root Directory
-    const auto ROOT_PATH = std::filesystem::current_path();
-    const auto TEMP_DIRECTORY = file_handler::CreatePathObject("MyOutput", ROOT_PATH);
+    const auto ROOT_DIRECTORY = std::filesystem::current_path();
+    const auto TEMP_DIRECTORY = file_handler::CreatePathObject("MyOutput", ROOT_DIRECTORY);
     //Subdirectories
     const auto RECORD_DIRECTORY = file_handler::CreatePathObject("Records", TEMP_DIRECTORY);
     const auto DATA_DIRECTORY = file_handler::CreatePathObject("Data", TEMP_DIRECTORY);
-    
-    /*const auto METADATA_PATHS = file_handler::MetadataPaths{}.SetQueue(DATA_DIRECTORY / "queue.mdat"_p);
 
-    const auto DATA_PATHS = file_handler::DataPaths{}.SetNameData({DATA_DIRECTORY / "names.dat"_p, DATA_DIRECTORY / "namessz.dat"_p})
-                                                                .SetIdentifierData({DATA_DIRECTORY / "identifiers.dat"_p, DATA_DIRECTORY / "identifierssz.dat"_p})
-                                                                .SetGenderData(DATA_DIRECTORY / "genders.dat"_p)
-                                                                .SetGroupData(DATA_DIRECTORY / "groups.dat"_p);*/
+    const auto USER_DATA_PATHS = catalogue::data_manager::UserDataPaths{}
+                                .SetMetadataPaths(file_handler::CreatePathObject("queue.mdat", DATA_DIRECTORY))
+                                .SetIdentifiersPath(file_handler::CreatePathObject("identifiers.dat", DATA_DIRECTORY))
+                                .SetNamesPath(file_handler::CreatePathObject("names.dat", DATA_DIRECTORY))
+                                .SetGendersPath(file_handler::CreatePathObject("genders.dat", DATA_DIRECTORY))
+                                .SetGroupsPath(file_handler::CreatePathObject("groups.dat", DATA_DIRECTORY));
 
     //catalogue::database::UserCatalogue catalogue;
-    //catalogue::file_handler::DatabaseHandler database(catalogue, METADATA_PATHS, DATA_PATHS);
+    //catalogue::catalogue::data_manager::DatabaseHandler database(catalogue, METADATA_PATHS, DATA_PATHS);
 
     //database.Deserialize();
     //auto item = catalogue.GetUserByIdentifier("LAN0109"s);
