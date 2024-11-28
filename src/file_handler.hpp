@@ -1,8 +1,7 @@
 #pragma once
 
-#include <filesystem>
 #include <fstream>
-
+#include <filesystem>
 #include "domain.hpp"
 
 namespace fs = std::filesystem;
@@ -18,10 +17,14 @@ namespace file_handler {
         fs::path path = parent_path / fs::path(path_to_validate);
         if (!std::filesystem::exists(path)) {
             if (path.has_extension()) {
-                static std::ofstream new_file(path);
-                if (!new_file) {
+                static std::ofstream new_file;
+                new_file.open(path);
+                if (new_file) {
+                    new_file.close();
+                } else {
                     throw exceptions::ValidationPathError{};
                 }
+
             } else {
                 fs::create_directory(path);
             }
@@ -31,14 +34,9 @@ namespace file_handler {
     }
 
     template <typename T>
-    inline static bool WriteInBinary(const fs::path& path, T* source, size_t size = sizeof(T)) {
-        //bfout = binary-file-out
-        static std::ofstream bfout;
-        bfout.open(path, std::ios::out | std::ios::binary | std::ios::app);
-
+    inline static bool WriteInBinary(std::fstream& bfout /*binary-file-out*/, T* source, size_t size = sizeof(T)) {
         if (bfout) {
             bfout.write(reinterpret_cast<char*>(source), size);
-            bfout.close();
         }
         
         return bfout ? true : false;
@@ -56,6 +54,8 @@ namespace file_handler {
         
         return bfin ? true : false;
     }
+
+    
     
     
 } //namespace file_handler

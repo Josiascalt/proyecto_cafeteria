@@ -26,10 +26,10 @@ namespace encoder {
                 }
             }
 
-            Item(Item&& other) = default;
-            Item(const Item& other) = delete;
-            Item& operator=(Item&& other) = default; 
-            Item& operator=(const Item& other) = delete; 
+            //Item(Item&& other) = default;
+            //Item(const Item& other) = delete;
+            //Item& operator=(Item&& other) = default; 
+            //Item& operator=(const Item& other) = delete; 
 
             Type GetValue() const;
             std::string Decode() const;
@@ -92,7 +92,7 @@ namespace encoder {
             const auto size = std::min(items_count, target_size);
 
             auto beg = data_beg;
-            for (int i = 0; i < size - 1; i++) {
+            for (size_t i = 0; i < size - 1; i++) {
                 auto end = beg + Item::CAPACITY;
                 *target++ = Item{beg, end};
                 beg = end;

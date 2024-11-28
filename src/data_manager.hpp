@@ -70,32 +70,31 @@ namespace catalogue {
 
             }
 
-            /*template <typename T>
-            bool Serialize(T obj) {
+            template <typename T>
+            bool Serialize(T* obj) {
+                bool status = true;
 
-                SerializeMetadata(&obj);
-                
-                if (auto name = dynamic_cast<domain::components::Nameable*>(&obj)) {
-                    WriteInBinary(data_.name_data.data, obj.name.data());
+                //SerializeMetadata(obj);
+
+                if (auto identifier = dynamic_cast<domain::components::Identifiable*>(obj)) {
+                    status = file_handler::WriteInBinary(identifiers_, &identifier -> value);
                 }
                 
-                if (layout.has_identifier) {
-                    Size size = obj.identifier.size();
-
-                    WriteInBinary(data_.identifier_data.sizes, &size);
-                    WriteInBinary(data_.identifier_data.data, obj.identifier.data(), size);
+                if (auto name = dynamic_cast<domain::components::Nameable*>(obj)) {
+                    status = file_handler::WriteInBinary(names_, &name -> value);
                 }
 
-                if (layout.has_group) {
-                    WriteInBinary(data_.group_data, &obj.group);
+                if (auto gender = dynamic_cast<domain::components::Genderable*>(obj)) {
+                    status = file_handler::WriteInBinary(genders_, &gender -> value);
                 }
 
-                if (layout.has_gender) {
-                    WriteInBinary(data_.gender_data, &obj.gender);
+                if (auto group = dynamic_cast<domain::components::Groupable*>(obj)) {
+                    status = file_handler::WriteInBinary(groups_, &group -> value);
                 }
 
-                return false;
-            }*/
+                return status;
+            }
+        private:
 
         private:
             //Metadata

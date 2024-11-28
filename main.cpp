@@ -1,18 +1,10 @@
 #include "src/domain.cpp"
 #include "src/data_manager.hpp"
-
 #include "src/utilities/encoder.cpp"
-
-
-//#include "users_catalogue.hpp"
-//#include "users_catalogue.cpp"
-
-//#include "catalogue::data_manager.cpp"
-//#include "testing.hpp"
-
 #include <iostream>
 #include <string_view>
 #include <utility>
+#include <windows.h>
 
 using namespace std::literals;
 
@@ -80,9 +72,11 @@ int main() {
         }
     }*/
 
-    auto str = "   efeefe sqdqdVWF WGFDBTSG R GTGw3335"s;
-    auto item = encoder::ascii::EncodeData(str.begin(), str.end());
-    std::cout << item.Decode() << '\n';
+    catalogue::data_manager::UserDataHandler handler(USER_DATA_PATHS);
+    auto student = catalogue::domain::compound_types::Student{}.SetName("hola"s);
+    handler.Serialize(&student);
+    //Sleep(10'000);
+
     std::cout << "Success!"sv;
     
     return 0;

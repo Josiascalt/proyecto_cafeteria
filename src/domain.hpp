@@ -114,7 +114,7 @@ namespace catalogue {
             };
 
             struct Identifiable {
-                types::Identifier value;
+                types::Identifier value = 0;
             protected:
                 virtual ~Identifiable() = default;
             };
@@ -188,12 +188,14 @@ namespace catalogue {
             using namespace components;
 
             enum class UserType : char {
-                Student
+                MONOSTATE,
+                STUDENT
             };
 
             //class Interface
             class User {
-            protected:
+            public:
+                virtual UserType GetUserType() = 0;
                 virtual ~User() = default;
             };
                 
@@ -203,8 +205,19 @@ namespace catalogue {
                                 , public GenderablePathProps<Student> 
                                 , public GroupablePathProps<Student> {
             public:
-                Student() = default;
-            };  
+                inline Student() = default;
+                inline UserType GetUserType() override {
+                    return UserType::STUDENT;
+                }
+            };
+
+            inline static std::unique_ptr<User> CreateUser(UserType user_type) {
+                if (user_type == UserType::STUDENT) {
+                    return std::make_unique<Student>();
+                }
+
+                return nullptr;
+            }
 
         } //namespace compound_types         
     } // namespace domain
