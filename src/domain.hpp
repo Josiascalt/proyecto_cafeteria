@@ -98,14 +98,12 @@ namespace catalogue {
             template <typename T>
             struct Components {
                 typedef T Type;
-
                 T value;
-
+            protected:
                 virtual ~Components() = default;
             };
 
             struct Nameable : Components<types::Name> {
-                
             protected:
                 virtual ~Nameable() = default;
             };
@@ -117,12 +115,14 @@ namespace catalogue {
                     encoder::ascii::EncodeDataInIterable(name.begin(), name.end(), value.begin(), value.size());
                     return static_cast<Owner&>(*this);
                 }
+                std::string GetName() const {
+                    return encoder::ascii::DecodeDataFromIterable(value.begin(), value.end());
+                }
             protected:
                 virtual ~NameablePathProps() = default;
             };
 
-            struct Identifiable {
-                types::Identifier value = 0;
+            struct Identifiable : Components<types::Identifier> {
             protected:
                 virtual ~Identifiable() = default;
             };
@@ -130,16 +130,20 @@ namespace catalogue {
             //struct Person's helper struct to enable named parameter idiom
             template <typename Owner>
             struct IdentifiablePathProps : Identifiable {
-                Owner& SetIdentifier(types::Identifier identifier) {
+                Owner& SetIdentifier(Type identifier) {
                     this -> value = std::move(identifier);
                     return static_cast<Owner&>(*this);
                 }
+
+                Type GetIdentifier() const {
+                    return value;
+                }
+                
             protected:
                 virtual ~IdentifiablePathProps() = default;
             };
 
-            struct Genderable {
-                types::Gender value;
+            struct Genderable : Components<types::Gender> {
             protected:
                 virtual ~Genderable() = default;
             };
@@ -147,16 +151,19 @@ namespace catalogue {
             //struct Person's helper struct to enable named parameter idiom
             template <typename Owner>
             struct GenderablePathProps : Genderable {
-                Owner& SetGender(types::Gender gender) {
+                Owner& SetGender(Type gender) {
                     this -> value = gender;
                     return static_cast<Owner&>(*this);
+                }
+
+                Type GetGender() const {
+                    return value;
                 }
             protected:
                 virtual ~GenderablePathProps() = default;
             };
             
-            struct Groupable {
-                types::Group value;
+            struct Groupable : Components<types::Group> {
             protected:
                 virtual ~Groupable() = default;
             };
@@ -164,9 +171,13 @@ namespace catalogue {
             //struct Person's helper struct to enable named parameter idiom
             template <typename Owner>
             struct GroupablePathProps : Groupable {
-                Owner& SetGroup(types::Group group) {
+                Owner& SetGroup(Type group) {
                     this -> value = group;
                     return static_cast<Owner&>(*this);
+                }
+
+                Type GetGroup() const {
+                    return value;
                 }
             protected:
                 virtual ~GroupablePathProps() = default;

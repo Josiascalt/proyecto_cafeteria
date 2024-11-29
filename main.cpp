@@ -73,9 +73,15 @@ int main() {
     }*/
 
     catalogue::data_manager::UserDataHandler handler(USER_DATA_PATHS);
-    auto student = catalogue::domain::compound_types::Student{}.SetName("hola"s);
-    handler.Serialize(&student);
+    //auto student = catalogue::domain::compound_types::Student{}.SetName("Josias Cabrera Altamirano es un compadre bien chindorris."s);
+    //handler.Serialize(&student);
     //Sleep(10'000);
+
+    auto user = handler.Deserialize();
+    
+    auto student = dynamic_cast<catalogue::domain::compound_types::Student*>(user.get());
+
+    std::cout << student -> GetName() << '\n';
 
     std::cout << "Success!"sv;
     

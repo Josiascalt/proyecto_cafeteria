@@ -71,31 +71,63 @@ namespace catalogue {
             }
 
             template <typename T>
-            bool Serialize(T* obj) {
+            bool Serialize(T* user) {
                 bool status = true;
-
-                //SerializeMetadata(obj);
-
-                if (auto identifier = dynamic_cast<domain::components::Identifiable*>(obj)) {
+                //metadata
+                status = SerializeMetadata(user);
+                //data
+                if (auto identifier = dynamic_cast<domain::components::Identifiable*>(user)) {
                     status = file_handler::WriteInBinary(identifiers_, &identifier -> value);
                 }
                 
-                if (auto name = dynamic_cast<domain::components::Nameable*>(obj)) {
+                if (auto name = dynamic_cast<domain::components::Nameable*>(user)) {
                     status = file_handler::WriteInBinary(names_, &name -> value);
                 }
 
-                if (auto gender = dynamic_cast<domain::components::Genderable*>(obj)) {
+                if (auto gender = dynamic_cast<domain::components::Genderable*>(user)) {
                     status = file_handler::WriteInBinary(genders_, &gender -> value);
                 }
 
-                if (auto group = dynamic_cast<domain::components::Groupable*>(obj)) {
+                if (auto group = dynamic_cast<domain::components::Groupable*>(user)) {
                     status = file_handler::WriteInBinary(groups_, &group -> value);
                 }
 
                 return status;
             }
-        private:
 
+            inline std::unique_ptr<domain::compound_types::User> Deserialize() {
+                domain::compound_types::UserType user_type;
+                file_handler::ReadInBinary(queue_, &user_type);
+
+                if (auto user = domain::compound_types::CreateUser(user_type)) {
+                    if (auto identifier = dynamic_cast<domain::components::Identifiable*>(user.get())) {
+                        file_handler::ReadInBinary(identifiers_, &identifier -> value);
+                    }
+                    
+                    if (auto name = dynamic_cast<domain::components::Nameable*>(user.get())) {
+                        file_handler::ReadInBinary(names_, &name -> value);
+                    }
+
+                    if (auto gender = dynamic_cast<domain::components::Genderable*>(user.get())) {
+                        file_handler::ReadInBinary(genders_, &gender -> value);
+                    }
+
+                    if (auto group = dynamic_cast<domain::components::Groupable*>(user.get())) {
+                        file_handler::ReadInBinary(groups_, &group -> value);
+                    }
+
+                    return user;
+                }
+
+                return nullptr;
+            }
+
+        private:
+            template <typename T>
+            inline bool SerializeMetadata(T* user) {
+                auto user_type = user -> GetUserType();
+                return file_handler::WriteInBinary(queue_, &user_type);
+            }
         private:
             //Metadata
             std::fstream queue_;

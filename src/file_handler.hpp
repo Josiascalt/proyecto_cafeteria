@@ -43,13 +43,9 @@ namespace file_handler {
     } 
 
     template <typename T>
-    inline static bool ReadInBinary(const fs::path& path, T* target, size_t size = sizeof(T)) {
-        //bfin = binary-file-in
-        static std::ifstream bfin;
-        bfin.open(path, std::ios::in | std::ios::binary);
+    inline static bool ReadInBinary(std::fstream& bfin /*binary-file-in*/, T* target, size_t size = sizeof(T)) {
         if (bfin) {
             bfin.read(reinterpret_cast<char*>(target), size);
-            bfin.close();
         }
         
         return bfin ? true : false;
