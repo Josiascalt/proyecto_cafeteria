@@ -95,9 +95,17 @@ namespace catalogue {
             
             } //namespace types
 
-            struct Nameable {
-                types::Name value;
+            template <typename T>
+            struct Components {
+                typedef T Type;
 
+                T value;
+
+                virtual ~Components() = default;
+            };
+
+            struct Nameable : Components<types::Name> {
+                
             protected:
                 virtual ~Nameable() = default;
             };
