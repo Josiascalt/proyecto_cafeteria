@@ -55,7 +55,7 @@ namespace catalogue {
             void RecoverData();
         private:
             
-            
+    
         };
 
         class UserDataHandler {
@@ -94,7 +94,7 @@ namespace catalogue {
 
                 return status;
             }
-
+            
             inline std::unique_ptr<domain::compound_types::User> DeserializeUser() {
                 if (auto user = DeserializeMetadata()) {
                     if (auto identifier = dynamic_cast<domain::components::Identifiable*>(user.get())) {
@@ -132,7 +132,6 @@ namespace catalogue {
 
                 return domain::compound_types::CreateUser(user_type);
             }
-
         private:
             //Metadata
             std::fstream queue_;
