@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <unordered_map>
 #include <utility>
+#include <deque>
 //#include <memory>
 //#include <optional>
 
@@ -60,6 +61,8 @@ namespace catalogue {
 
         class UserDataHandler {
         public:
+            using UserPtr = std::unique_ptr<domain::compound_types::User>;
+        public:
             inline UserDataHandler(const UserDataPaths& user_data) 
             : queue_(user_data.metadata.queue, std::ios::in | std::ios::out | std::ios::binary | std::ios::app)
             , names_(user_data.names, std::ios::in | std::ios::out | std::ios::binary | std::ios::app)
@@ -71,67 +74,71 @@ namespace catalogue {
             }
 
             template <typename T>
-            bool SerializeUser(T* user) {
-                bool status = true;
+            void Serialize(T* user) {
                 //metadata
-                status = SerializeMetadata(user);
+                SerializeMetadata(user);
                 //data
                 if (auto identifier = dynamic_cast<domain::components::Identifiable*>(user)) {
-                    status = file_handler::WriteInBinary(identifiers_, &identifier -> value);
+                    file_handler::WriteInBinary(identifiers_, &identifier -> value);
                 }
                 
                 if (auto name = dynamic_cast<domain::components::Nameable*>(user)) {
-                    status = file_handler::WriteInBinary(names_, &name -> value);
+                    file_handler::WriteInBinary(names_, &name -> value);
                 }
 
                 if (auto gender = dynamic_cast<domain::components::Genderable*>(user)) {
-                    status = file_handler::WriteInBinary(genders_, &gender -> value);
+                    file_handler::WriteInBinary(genders_, &gender -> value);
                 }
 
                 if (auto group = dynamic_cast<domain::components::Groupable*>(user)) {
-                    status = file_handler::WriteInBinary(groups_, &group -> value);
+                    file_handler::WriteInBinary(groups_, &group -> value);
                 }
-
-                return status;
             }
             
-            inline std::unique_ptr<domain::compound_types::User> DeserializeUser() {
-                if (auto user = DeserializeMetadata()) {
-                    if (auto identifier = dynamic_cast<domain::components::Identifiable*>(user.get())) {
-                        file_handler::ReadInBinary(identifiers_, &identifier -> value);
-                    }
+            inline std::deque<UserPtr> Deserialize() {
+                std::deque<UserPtr> result;
+                for (size_t index = 0; index < file_handler::CalcFileSize(queue_); index++) {
+                    if (auto user = DeserializeMetadata()) {
                     
-                    if (auto name = dynamic_cast<domain::components::Nameable*>(user.get())) {
-                        file_handler::ReadInBinary(names_, &name -> value);
-                    }
+                        if (auto identifier = dynamic_cast<domain::components::Identifiable*>(user.get())) {
+                            file_handler::ReadInBinary(identifiers_, &identifier -> value);
+                        }
+                        
+                        if (auto name = dynamic_cast<domain::components::Nameable*>(user.get())) {
+                            file_handler::ReadInBinary(names_, &name -> value);
+                        }
 
-                    if (auto gender = dynamic_cast<domain::components::Genderable*>(user.get())) {
-                        file_handler::ReadInBinary(genders_, &gender -> value);
-                    }
+                        if (auto gender = dynamic_cast<domain::components::Genderable*>(user.get())) {
+                            file_handler::ReadInBinary(genders_, &gender -> value);
+                        }
 
-                    if (auto group = dynamic_cast<domain::components::Groupable*>(user.get())) {
-                        file_handler::ReadInBinary(groups_, &group -> value);
-                    }
+                        if (auto group = dynamic_cast<domain::components::Groupable*>(user.get())) {
+                            file_handler::ReadInBinary(groups_, &group -> value);
+                        }
 
-                    return user;
+                        result.push_back(std::move(user));
+                        continue;
+                    }
+                    break;
                 }
-
-                return nullptr;
+                
+                return result;
             }
 
         private:
             template <typename T>
-            inline bool SerializeMetadata(T* user) {
+            inline void SerializeMetadata(T* user) {
                 domain::compound_types::UserType user_type = user -> GetUserType();
-                return file_handler::WriteInBinary(queue_, &user_type);
+                file_handler::WriteInBinary(queue_, &user_type);
             }
 
-            inline std::unique_ptr<domain::compound_types::User> DeserializeMetadata() {
+            inline UserPtr DeserializeMetadata() {
                 domain::compound_types::UserType user_type;
                 file_handler::ReadInBinary(queue_, &user_type);
 
                 return domain::compound_types::CreateUser(user_type);
             }
+
         private:
             //Metadata
             std::fstream queue_;

@@ -33,6 +33,15 @@ namespace file_handler {
         return path;
     }
 
+    inline static size_t CalcFileSize(std::fstream& file) {
+        auto initial_pos = file.tellg();
+        file.seekg(0, std::ios::end);
+        auto file_size = file.tellg();
+        file.seekg(initial_pos);
+        
+        return file_size;
+    }
+
     template <typename T>
     inline static bool WriteInBinary(std::fstream& bfout /*binary-file-out*/, T* source, size_t size = sizeof(T)) {
         if (bfout) {
