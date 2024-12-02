@@ -40,7 +40,7 @@ int main() {
     //catalogue::database::UserCatalogue catalogue;
     //catalogue::catalogue::data_manager::DatabaseHandler database(catalogue, METADATA_PATHS, DATA_PATHS);
 
-    //database.Deserialize();
+    //database.DeserializeUser();
     //auto item = catalogue.GetUserByIdentifier("LAN0109"s);
     //std::cout << (item ? item -> identifier : "none") << '\n';
 
@@ -48,19 +48,19 @@ int main() {
         std::string input;
         std::getline(std::cin, input);
         if (input == "ADD") {
-            database.Serialize(catalogue::domain::compound_types::final_types::Student{}.SetName("Josias"s)
+            database.SerializeUser(catalogue::domain::compound_types::final_types::Student{}.SetName("Josias"s)
                                                                                         .SetGroup(catalogue::domain::components::Group::TAC::BILINGUAL_BUSINESS_DEPARTMENT)
                                                                                         .SetGender(catalogue::domain::components::Gender::MALE)
                                                                                         .SetIdentifier("JCA0109"s));
-            database.Serialize(catalogue::domain::compound_types::final_types::Student{}.SetName("Liliia"s)
+            database.SerializeUser(catalogue::domain::compound_types::final_types::Student{}.SetName("Liliia"s)
                                                                                         .SetGroup(catalogue::domain::components::Group::TAC::MUSIC_DEPARTMENT)
                                                                                         .SetGender(catalogue::domain::components::Gender::FEMALE)
                                                                                         .SetIdentifier("LIL0109"s));
-            database.Serialize(catalogue::domain::compound_types::final_types::Student{}.SetName("Lancelot"s)
+            database.SerializeUser(catalogue::domain::compound_types::final_types::Student{}.SetName("Lancelot"s)
                                                                                         .SetGroup(catalogue::domain::components::Group::TAIS::NINTH_GRADE)
                                                                                         .SetGender(catalogue::domain::components::Gender::MALE)
                                                                                         .SetIdentifier("LAN0109"s));
-            database.Serialize(catalogue::domain::compound_types::final_types::Student{}.SetName("Odette"s)
+            database.SerializeUser(catalogue::domain::compound_types::final_types::Student{}.SetName("Odette"s)
                                                                                         .SetGroup(catalogue::domain::components::Group::TAA::SECOND_GRADE)
                                                                                         .SetGender(catalogue::domain::components::Gender::FEMALE)
                                                                                         .SetIdentifier("ODD0109"s));
@@ -74,10 +74,10 @@ int main() {
 
     catalogue::data_manager::UserDataHandler handler(USER_DATA_PATHS);
     //auto student = catalogue::domain::compound_types::Student{}.SetName("Josias Cabrera Altamirano es un compadre bien chindorris."s);
-    //handler.Serialize(&student);
+    //handler.SerializeUser(&student);
     //Sleep(10'000);
 
-    auto user = handler.Deserialize();
+    auto user = handler.DeserializeUser();
     
     auto student = dynamic_cast<catalogue::domain::compound_types::Student*>(user.get());
 

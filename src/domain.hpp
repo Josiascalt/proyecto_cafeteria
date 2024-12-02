@@ -94,7 +94,8 @@ namespace catalogue {
                 };
             
             } //namespace types
-
+            
+            //class interface
             template <typename T>
             struct Components {
                 typedef T Type;
@@ -108,7 +109,7 @@ namespace catalogue {
                 virtual ~Nameable() = default;
             };
 
-            //struct Person's helper struct to enable named parameter idiom
+            //helper struct to enable named parameter idiom
             template <typename Owner>
             struct NameablePathProps : Nameable {
                 Owner& SetName(const std::string& name) {
@@ -127,7 +128,7 @@ namespace catalogue {
                 virtual ~Identifiable() = default;
             };
 
-            //struct Person's helper struct to enable named parameter idiom
+            //helper struct to enable named parameter idiom
             template <typename Owner>
             struct IdentifiablePathProps : Identifiable {
                 Owner& SetIdentifier(Type identifier) {
@@ -148,7 +149,7 @@ namespace catalogue {
                 virtual ~Genderable() = default;
             };
 
-            //struct Person's helper struct to enable named parameter idiom
+            //helper struct to enable named parameter idiom
             template <typename Owner>
             struct GenderablePathProps : Genderable {
                 Owner& SetGender(Type gender) {
@@ -168,7 +169,7 @@ namespace catalogue {
                 virtual ~Groupable() = default;
             };
 
-            //struct Person's helper struct to enable named parameter idiom
+            //helper struct to enable named parameter idiom
             template <typename Owner>
             struct GroupablePathProps : Groupable {
                 Owner& SetGroup(Type group) {

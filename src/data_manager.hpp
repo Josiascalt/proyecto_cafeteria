@@ -71,7 +71,7 @@ namespace catalogue {
             }
 
             template <typename T>
-            bool Serialize(T* user) {
+            bool SerializeUser(T* user) {
                 bool status = true;
                 //metadata
                 status = SerializeMetadata(user);
@@ -95,11 +95,8 @@ namespace catalogue {
                 return status;
             }
 
-            inline std::unique_ptr<domain::compound_types::User> Deserialize() {
-                domain::compound_types::UserType user_type;
-                file_handler::ReadInBinary(queue_, &user_type);
-
-                if (auto user = domain::compound_types::CreateUser(user_type)) {
+            inline std::unique_ptr<domain::compound_types::User> DeserializeUser() {
+                if (auto user = DeserializeMetadata()) {
                     if (auto identifier = dynamic_cast<domain::components::Identifiable*>(user.get())) {
                         file_handler::ReadInBinary(identifiers_, &identifier -> value);
                     }
@@ -125,9 +122,17 @@ namespace catalogue {
         private:
             template <typename T>
             inline bool SerializeMetadata(T* user) {
-                auto user_type = user -> GetUserType();
+                domain::compound_types::UserType user_type = user -> GetUserType();
                 return file_handler::WriteInBinary(queue_, &user_type);
             }
+
+            inline std::unique_ptr<domain::compound_types::User> DeserializeMetadata() {
+                domain::compound_types::UserType user_type;
+                file_handler::ReadInBinary(queue_, &user_type);
+
+                return domain::compound_types::CreateUser(user_type);
+            }
+
         private:
             //Metadata
             std::fstream queue_;
