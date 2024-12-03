@@ -1,4 +1,4 @@
-/*#pragma once
+#pragma once
 
 #include "domain.hpp"
 
@@ -12,10 +12,6 @@
 namespace catalogue {
     namespace database {
         class UserCatalogue {
-        private:
-            using UserPtr = std::shared_ptr<domain::compound_types::User>;
-            using Users = std::deque<UserPtr>;
-            using Index = int;
         public:
             template<typename UserInterface>
             void AddUser(UserInterface user) {
@@ -33,4 +29,4 @@ namespace catalogue {
             std::unordered_map<std::string_view, Index> identifier_to_user_;
         };
     } //namespace database
-} //namespace catalogue*/
+} //namespace catalogue

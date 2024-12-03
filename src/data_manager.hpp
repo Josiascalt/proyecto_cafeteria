@@ -4,7 +4,7 @@
 #include <filesystem>
 #include <unordered_map>
 #include <utility>
-#include <deque>
+#include <vector>
 //#include <memory>
 //#include <optional>
 
@@ -13,6 +13,10 @@
 
 namespace catalogue {
     namespace data_manager {
+        namespace exceptions {
+            struct InvalidUserPtr {};
+        }
+
         struct UserDataPaths {
             struct Metadata {
                 fs::path queue;
@@ -50,31 +54,25 @@ namespace catalogue {
             }
         };
 
-        class DataManager {
-        public:
-            void BackupData();
-            void RecoverData();
-        private:
-            
-    
-        };
-
         class UserDataHandler {
         public:
             using UserPtr = std::unique_ptr<domain::compound_types::User>;
         public:
             inline UserDataHandler(const UserDataPaths& user_data) 
-            : queue_(user_data.metadata.queue, std::ios::in | std::ios::out | std::ios::binary | std::ios::app)
-            , names_(user_data.names, std::ios::in | std::ios::out | std::ios::binary | std::ios::app)
-            , identifiers_(user_data.identifiers, std::ios::in | std::ios::out | std::ios::binary | std::ios::app)
-            , genders_(user_data.genders, std::ios::in | std::ios::out | std::ios::binary | std::ios::app)
-            , groups_(user_data.groups, std::ios::in | std::ios::out | std::ios::binary | std::ios::app)
+            : user_queue_(file_handler::CreateBinaryFstream(user_data.metadata.queue))
+            , names_(file_handler::CreateBinaryFstream(user_data.names))
+            , identifiers_(file_handler::CreateBinaryFstream(user_data.identifiers))
+            , genders_(file_handler::CreateBinaryFstream(user_data.genders))
+            , groups_(file_handler::CreateBinaryFstream(user_data.groups))
             {
 
             }
 
             template <typename T>
             void Serialize(T* user) {
+                if (!user) {
+                    throw InvalidUserPtr{};
+                }
                 //metadata
                 SerializeMetadata(user);
                 //data
@@ -95,9 +93,12 @@ namespace catalogue {
                 }
             }
             
-            inline std::deque<UserPtr> Deserialize() {
-                std::deque<UserPtr> result;
-                for (size_t index = 0; index < file_handler::CalcFileSize(queue_); index++) {
+            inline std::vector<UserPtr> Deserialize() {
+                std::vector<UserPtr> result;
+                auto total_users = file_handler::CalcFileSize(user_queue_);
+                result.reserve(total_users);
+
+                for (size_t index = 0; index < total_users; index++) {
                     if (auto user = DeserializeMetadata()) {
                     
                         if (auto identifier = dynamic_cast<domain::components::Identifiable*>(user.get())) {
@@ -119,7 +120,8 @@ namespace catalogue {
                         result.push_back(std::move(user));
                         continue;
                     }
-                    break;
+
+                    throw exceptions::InvalidUserPtr{};
                 }
                 
                 return result;
@@ -129,19 +131,19 @@ namespace catalogue {
             template <typename T>
             inline void SerializeMetadata(T* user) {
                 domain::compound_types::UserType user_type = user -> GetUserType();
-                file_handler::WriteInBinary(queue_, &user_type);
+                file_handler::WriteInBinary(user_queue_, &user_type);
             }
 
             inline UserPtr DeserializeMetadata() {
                 domain::compound_types::UserType user_type;
-                file_handler::ReadInBinary(queue_, &user_type);
+                file_handler::ReadInBinary(user_queue_, &user_type);
 
-                return domain::compound_types::CreateUser(user_type);
+                return domain::compound_types::MakeUser(user_type);
             }
 
         private:
             //Metadata
-            std::fstream queue_;
+            std::fstream user_queue_;
             //Data
             std::fstream names_;
             std::fstream identifiers_;

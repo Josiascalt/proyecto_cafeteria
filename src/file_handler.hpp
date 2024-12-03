@@ -33,6 +33,10 @@ namespace file_handler {
         return path;
     }
 
+    inline static std::fstream CreateBinaryFstream(const fs::path& path) {
+        return std::fstream{path, std::ios::in | std::ios::out | std::ios::binary | std::ios::app};
+    }
+
     inline static size_t CalcFileSize(std::fstream& file) {
         auto initial_pos = file.tellg();
         file.seekg(0, std::ios::end);

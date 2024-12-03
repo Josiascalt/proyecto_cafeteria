@@ -105,85 +105,52 @@ namespace catalogue {
             };
 
             struct Nameable : Components<types::Name> {
-            protected:
-                virtual ~Nameable() = default;
-            };
-
-            //helper struct to enable named parameter idiom
-            template <typename Owner>
-            struct NameablePathProps : Nameable {
-                Owner& SetName(const std::string& name) {
+                void SetName(const std::string& name) {
                     encoder::ascii::EncodeDataInIterable(name.begin(), name.end(), value.begin(), value.size());
-                    return static_cast<Owner&>(*this);
                 }
+
                 std::string GetName() const {
                     return encoder::ascii::DecodeDataFromIterable(value.begin(), value.end());
                 }
             protected:
-                virtual ~NameablePathProps() = default;
+                virtual ~Nameable() = default;
             };
 
             struct Identifiable : Components<types::Identifier> {
-            protected:
-                virtual ~Identifiable() = default;
-            };
-
-            //helper struct to enable named parameter idiom
-            template <typename Owner>
-            struct IdentifiablePathProps : Identifiable {
-                Owner& SetIdentifier(Type identifier) {
+                void SetIdentifier(Type identifier) {
                     this -> value = std::move(identifier);
-                    return static_cast<Owner&>(*this);
                 }
 
                 Type GetIdentifier() const {
                     return value;
                 }
-                
             protected:
-                virtual ~IdentifiablePathProps() = default;
+                virtual ~Identifiable() = default;
             };
 
             struct Genderable : Components<types::Gender> {
-            protected:
-                virtual ~Genderable() = default;
-            };
-
-            //helper struct to enable named parameter idiom
-            template <typename Owner>
-            struct GenderablePathProps : Genderable {
-                Owner& SetGender(Type gender) {
+                void SetGender(Type gender) {
                     this -> value = gender;
-                    return static_cast<Owner&>(*this);
                 }
 
                 Type GetGender() const {
                     return value;
                 }
             protected:
-                virtual ~GenderablePathProps() = default;
+                virtual ~Genderable() = default;
             };
             
             struct Groupable : Components<types::Group> {
-            protected:
-                virtual ~Groupable() = default;
-            };
-
-            //helper struct to enable named parameter idiom
-            template <typename Owner>
-            struct GroupablePathProps : Groupable {
-                Owner& SetGroup(Type group) {
+                void SetGroup(Type group) {
                     this -> value = group;
-                    return static_cast<Owner&>(*this);
                 }
 
                 Type GetGroup() const {
                     return value;
                 }
             protected:
-                virtual ~GroupablePathProps() = default;
+                virtual ~Groupable() = default;
             };
-            
         } //namespace components 
 
         /*
@@ -220,10 +187,10 @@ namespace catalogue {
             };
                 
             class Student final : public User
-                                , public NameablePathProps<Student>
-                                , public IdentifiablePathProps<Student>
-                                , public GenderablePathProps<Student> 
-                                , public GroupablePathProps<Student> {
+                                , public Nameable
+                                , public Identifiable
+                                , public Genderable
+                                , public Groupable {
             public:
                 inline Student() = default;
                 inline UserType GetUserType() override {
@@ -231,7 +198,7 @@ namespace catalogue {
                 }
             };
 
-            inline static std::unique_ptr<User> CreateUser(UserType user_type) {
+            inline static std::unique_ptr<User> MakeUser(UserType user_type) {
                 if (user_type == UserType::STUDENT) {
                     return std::make_unique<Student>();
                 }
