@@ -17,10 +17,6 @@ namespace catalogue {
 
         using namespace type_naming;
 
-        namespace literals {
-            std::filesystem::path operator""_p(const char* pathname, Size size);
-        } //namespace literals
-
         /*
             Every data members of every single struct/class declared within the namespace compound_types
             should be declared in the namespace "components", in order to keep all the basic types

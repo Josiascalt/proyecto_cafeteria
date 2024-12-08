@@ -1,16 +1,11 @@
 #pragma once
 
-#include <fstream>
-#include <filesystem>
+#include <deque>
 #include <unordered_map>
 #include <utility>
-#include <deque>
-//#include <memory>
-//#include <optional>
-
-#include <iostream>
 
 #include "domain.hpp"
+#include "file_handler.hpp"
 #include "file_handler.cpp"
 
 namespace catalogue {
@@ -33,46 +28,19 @@ namespace catalogue {
             fs::path genders;
             fs::path groups;
 
-            UserDataPaths& SetMetadataPaths(fs::path queue_path) {
-                metadata.queue = std::move(queue_path);
-                return *this;
-            }
-
-            UserDataPaths& SetNamesPath(fs::path names_path) {
-                names = std::move(names_path);
-                return *this;
-            }
-
-            UserDataPaths& SetIdentifiersPath(fs::path identifiers_path) {
-                identifiers = std::move(identifiers_path);
-                return *this;
-            }
-
-            UserDataPaths& SetGendersPath(fs::path genders_path) {
-                genders = std::move(genders_path);
-                return *this;
-            }
-
-            UserDataPaths& SetGroupsPath(fs::path groups_path) {
-                groups = std::move(groups_path);
-                return *this;
-            }
+            UserDataPaths& SetMetadataPaths(fs::path queue_path);
+            UserDataPaths& SetNamesPath(fs::path names_path);
+            UserDataPaths& SetIdentifiersPath(fs::path identifiers_path);
+            UserDataPaths& SetGendersPath(fs::path genders_path);
+            UserDataPaths& SetGroupsPath(fs::path groups_path);
         };
 
         class UserDataHandler {
         public:
-            inline UserDataHandler(const UserDataPaths& user_data) 
-            : user_queue_(user_data.metadata.queue)
-            , names_(user_data.names)
-            , identifiers_(user_data.identifiers)
-            , genders_(user_data.genders)
-            , groups_(user_data.groups)
-            {
-
-            }
+            UserDataHandler(const UserDataPaths& user_data);
 
             template <typename T>
-            void Serialize(T* user) {
+            inline void Serialize(T* user) {
                 if (!user) {
                     throw exceptions::InvalidUserPtr{};
                 }
@@ -96,38 +64,7 @@ namespace catalogue {
                 }
             }
             
-            inline std::deque<UserPtr> Deserialize() {
-                std::deque<UserPtr> result;
-                auto total_users = user_queue_.GetSize();
-
-                for (Size index = 0; index < total_users; index++) {
-                    auto user = DeserializeMetadata();
-                    if (user) {
-                    
-                        if (auto identifier = dynamic_cast<domain::components::Identifiable*>(user.get())) {
-                            identifiers_.Read(&identifier -> value);
-                        }
-                        
-                        if (auto name = dynamic_cast<domain::components::Nameable*>(user.get())) {
-                            names_.Read(&name -> value);
-                        }
-
-                        if (auto gender = dynamic_cast<domain::components::Genderable*>(user.get())) {
-                            genders_.Read(&gender -> value);
-                        }
-
-                        if (auto group = dynamic_cast<domain::components::Groupable*>(user.get())) {
-                            groups_.Read(&group -> value);
-                        }
-
-                        result.push_back(std::move(user));
-                    } else {
-                        throw exceptions::InvalidUserPtr{};
-                    }
-                }
-                
-                return result;
-            }
+            std::deque<UserPtr> Deserialize();
 
         private:
             template <typename T>
@@ -136,13 +73,7 @@ namespace catalogue {
                 user_queue_.Write(&user_type);
             }
 
-            inline UserPtr DeserializeMetadata() {
-                domain::compound_types::UserType user_type;
-
-                user_queue_.Read(&user_type);
-
-                return domain::compound_types::MakeUser(user_type);
-            }
+            UserPtr DeserializeMetadata();
 
         private:
             //Metadata

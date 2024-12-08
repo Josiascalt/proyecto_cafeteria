@@ -7,16 +7,8 @@
 #include <unordered_map>
 #include <filesystem>
 
-#include <iostream>
-
 namespace catalogue {
     namespace domain {
-        namespace literals {
-            std::filesystem::path operator""_p(const char* pathname, Size size) {
-                return std::filesystem::path(pathname, pathname + size);
-            }
-        } //namespace literals
-
         namespace components {
             namespace types {
                 //class Group member functions definition
