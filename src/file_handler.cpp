@@ -1,44 +1,26 @@
-/*#include "file_handler.hpp"
-#include "domain.hpp"
+#include "file_handler.hpp"
 
-#include <fstream>
-#include <filesystem>
-#include <unordered_map>
-#include <deque>
-#include <exception>
-
-namespace catalogue {
-    namespace file_handler {
-        using namespace std::literals;
-        using namespace domain::literals;
-        
-        
-
-        fs::path CreatePathObject(const char* path_to_validate, const fs::path parent_path = ""_p) {
-            fs::path path = parent_path / fs::path(path_to_validate);
-            if (!std::filesystem::exists(path)) {
-                if (path.has_extension()) {
-                    std::ofstream new_file(path);
-                    if (!new_file) {
-                        throw exceptions::paths::ValidationPathError{};
-                    }
-                } else {
-                    fs::create_directory(path);
-                }
-            }
-            
-            return path;
+namespace file_handler {
+    namespace literals {
+        std::filesystem::path operator""_p(const char* pathname, Size size) {
+                return std::filesystem::path(pathname, pathname + size);
         }
-        
-        //class DatabaseHandler member functions definition
-        DatabaseHandler::DatabaseHandler(database::UserCatalogue& catalogue, const MetadataPaths& metadata, const DataPaths& data) 
-        : catalogue_(catalogue)
-        , metadata_(metadata)
-        , data_(data)
-        , handler_()
-        {
+    } //namespace literals
 
-        }
-        
-    } //namespace file_handler
-} //namespace catalogue*/
+    //class BinaryFile member functions definition
+    BinaryFile::BinaryFile(const fs::path& path) 
+    : file_(path, std::ios::out | std::ios::in | std::ios::binary) {
+        file_.seekp(0, std::ios::end);
+        auto size = file_.tellp();
+        size_ = size;
+        write_pos_ = size;
+
+        file_.seekg(0, std::ios::beg);
+        read_pos_ = file_.tellg();
+    }
+
+    Size BinaryFile::GetSize() const {
+        return size_;
+    }
+    
+} //namespace file_handler

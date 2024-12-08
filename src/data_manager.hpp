@@ -4,15 +4,20 @@
 #include <filesystem>
 #include <unordered_map>
 #include <utility>
-#include <vector>
+#include <deque>
 //#include <memory>
 //#include <optional>
 
+#include <iostream>
+
 #include "domain.hpp"
-#include "file_handler.hpp"
+#include "file_handler.cpp"
 
 namespace catalogue {
     namespace data_manager {
+
+        using namespace domain::type_naming;
+
         namespace exceptions {
             struct InvalidUserPtr {};
         }
@@ -56,14 +61,12 @@ namespace catalogue {
 
         class UserDataHandler {
         public:
-            using UserPtr = std::unique_ptr<domain::compound_types::User>;
-        public:
             inline UserDataHandler(const UserDataPaths& user_data) 
-            : user_queue_(file_handler::CreateBinaryFstream(user_data.metadata.queue))
-            , names_(file_handler::CreateBinaryFstream(user_data.names))
-            , identifiers_(file_handler::CreateBinaryFstream(user_data.identifiers))
-            , genders_(file_handler::CreateBinaryFstream(user_data.genders))
-            , groups_(file_handler::CreateBinaryFstream(user_data.groups))
+            : user_queue_(user_data.metadata.queue)
+            , names_(user_data.names)
+            , identifiers_(user_data.identifiers)
+            , genders_(user_data.genders)
+            , groups_(user_data.groups)
             {
 
             }
@@ -71,57 +74,56 @@ namespace catalogue {
             template <typename T>
             void Serialize(T* user) {
                 if (!user) {
-                    throw InvalidUserPtr{};
+                    throw exceptions::InvalidUserPtr{};
                 }
                 //metadata
                 SerializeMetadata(user);
                 //data
                 if (auto identifier = dynamic_cast<domain::components::Identifiable*>(user)) {
-                    file_handler::WriteInBinary(identifiers_, &identifier -> value);
+                    identifiers_.Write(&identifier -> value);
                 }
                 
                 if (auto name = dynamic_cast<domain::components::Nameable*>(user)) {
-                    file_handler::WriteInBinary(names_, &name -> value);
+                    names_.Write(&name -> value);
                 }
 
                 if (auto gender = dynamic_cast<domain::components::Genderable*>(user)) {
-                    file_handler::WriteInBinary(genders_, &gender -> value);
+                    genders_.Write(&gender -> value);
                 }
 
                 if (auto group = dynamic_cast<domain::components::Groupable*>(user)) {
-                    file_handler::WriteInBinary(groups_, &group -> value);
+                    groups_.Write(&group -> value);
                 }
             }
             
-            inline std::vector<UserPtr> Deserialize() {
-                std::vector<UserPtr> result;
-                auto total_users = file_handler::CalcFileSize(user_queue_);
-                result.reserve(total_users);
+            inline std::deque<UserPtr> Deserialize() {
+                std::deque<UserPtr> result;
+                auto total_users = user_queue_.GetSize();
 
-                for (size_t index = 0; index < total_users; index++) {
-                    if (auto user = DeserializeMetadata()) {
+                for (Size index = 0; index < total_users; index++) {
+                    auto user = DeserializeMetadata();
+                    if (user) {
                     
                         if (auto identifier = dynamic_cast<domain::components::Identifiable*>(user.get())) {
-                            file_handler::ReadInBinary(identifiers_, &identifier -> value);
+                            identifiers_.Read(&identifier -> value);
                         }
                         
                         if (auto name = dynamic_cast<domain::components::Nameable*>(user.get())) {
-                            file_handler::ReadInBinary(names_, &name -> value);
+                            names_.Read(&name -> value);
                         }
 
                         if (auto gender = dynamic_cast<domain::components::Genderable*>(user.get())) {
-                            file_handler::ReadInBinary(genders_, &gender -> value);
+                            genders_.Read(&gender -> value);
                         }
 
                         if (auto group = dynamic_cast<domain::components::Groupable*>(user.get())) {
-                            file_handler::ReadInBinary(groups_, &group -> value);
+                            groups_.Read(&group -> value);
                         }
 
                         result.push_back(std::move(user));
-                        continue;
+                    } else {
+                        throw exceptions::InvalidUserPtr{};
                     }
-
-                    throw exceptions::InvalidUserPtr{};
                 }
                 
                 return result;
@@ -131,24 +133,25 @@ namespace catalogue {
             template <typename T>
             inline void SerializeMetadata(T* user) {
                 domain::compound_types::UserType user_type = user -> GetUserType();
-                file_handler::WriteInBinary(user_queue_, &user_type);
+                user_queue_.Write(&user_type);
             }
 
             inline UserPtr DeserializeMetadata() {
                 domain::compound_types::UserType user_type;
-                file_handler::ReadInBinary(user_queue_, &user_type);
+
+                user_queue_.Read(&user_type);
 
                 return domain::compound_types::MakeUser(user_type);
             }
 
         private:
             //Metadata
-            std::fstream user_queue_;
+            file_handler::BinaryFile user_queue_;
             //Data
-            std::fstream names_;
-            std::fstream identifiers_;
-            std::fstream genders_;
-            std::fstream groups_;
+            file_handler::BinaryFile names_;
+            file_handler::BinaryFile identifiers_;
+            file_handler::BinaryFile genders_;
+            file_handler::BinaryFile groups_;
         };
 
     } //namespace data_manager

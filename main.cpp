@@ -1,9 +1,11 @@
-#include "src/domain.cpp"
-#include "src/data_manager.hpp"
-#include "src/utilities/encoder.cpp"
 #include <iostream>
 #include <string_view>
 #include <utility>
+
+#include "src/domain.cpp"
+#include "src/data_manager.hpp"
+#include "src/utilities/encoder.cpp"
+#include "src/user_catalogue.cpp"
 //#include <windows.h>
 
 using namespace std::literals;
@@ -73,17 +75,32 @@ int main() {
     }*/
 
     catalogue::data_manager::UserDataHandler handler(USER_DATA_PATHS);
-    //auto student = catalogue::domain::compound_types::Student{}.SetName("Otro gato"s);
-    //handler.Serialize(&student);
+    catalogue::domain::compound_types::Student student;
+    student.SetName("Josias Cabrera"s);
+    student.SetGroup(catalogue::domain::components::types::Group::TAC::BILINGUAL_BUSINESS_DEPARTMENT);
+    student.SetGender(catalogue::domain::components::types::Gender::MALE);
+    student.SetIdentifier("JCA0109"s);
+    handler.Serialize(&student);
     //Sleep(10'000);
 
     auto users = handler.Deserialize();
     for (const auto& user : users) {
         if (auto s = dynamic_cast<catalogue::domain::compound_types::Student*>(user.get()))
-        std::cout << s -> GetName() << '\n';
+        std::cout << s -> GetIdentifier() << '\n';
+    }
+    catalogue::database::UserCatalogue catalogue(std::move(users));
+    std::hash<std::string> hasher;
+
+    std::string input;
+    while (input != "exit"s) {
+        std::getline(std::cin, input);
+        
+        const auto& result = catalogue.GetUserByIdentifier(hasher(input));
+        std::cout << (result ? "Please enter!" : "Get out!") << '\n';
     }
     
 
+    
     std::cout << "Success!"sv;
     
     return 0;

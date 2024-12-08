@@ -12,7 +12,7 @@
 namespace catalogue {
     namespace domain {
         namespace literals {
-            std::filesystem::path operator""_p(const char* pathname, size_t size) {
+            std::filesystem::path operator""_p(const char* pathname, Size size) {
                 return std::filesystem::path(pathname, pathname + size);
             }
         } //namespace literals

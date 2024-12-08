@@ -3,19 +3,22 @@
 #include "utilities/encoder.hpp"
 
 #include <string>
-#include <string_view>
 #include <array>
 #include <utility>
 #include <memory>
 #include <variant>
 #include <filesystem>
 
-#include <type_traits>
-
 namespace catalogue {
     namespace domain {
+        namespace type_naming {
+            using Size = size_t;
+        } //namespace type_naming
+
+        using namespace type_naming;
+
         namespace literals {
-            std::filesystem::path operator""_p(const char* pathname, size_t size);
+            std::filesystem::path operator""_p(const char* pathname, Size size);
         } //namespace literals
 
         /*
@@ -117,8 +120,9 @@ namespace catalogue {
             };
 
             struct Identifiable : Components<types::Identifier> {
-                void SetIdentifier(Type identifier) {
-                    this -> value = std::move(identifier);
+                void SetIdentifier(const std::string& identifier) {
+                    const static std::hash<std::string> hasher;
+                    this -> value = hasher(identifier);
                 }
 
                 Type GetIdentifier() const {
@@ -180,15 +184,15 @@ namespace catalogue {
             };
 
             //class Interface
-            class User {
+            class User : public Identifiable {
             public:
                 virtual UserType GetUserType() = 0;
+
                 virtual ~User() = default;
             };
                 
             class Student final : public User
                                 , public Nameable
-                                , public Identifiable
                                 , public Genderable
                                 , public Groupable {
             public:
@@ -205,8 +209,12 @@ namespace catalogue {
 
                 return nullptr;
             }
+        } //namespace compound_types 
 
-        } //namespace compound_types         
+        namespace type_naming {
+            using Size = size_t;
+            using UserPtr = std::unique_ptr<compound_types::User>;
+        } //namespace catalogue_naming 
     } // namespace domain
 } // namespace catalogue
 

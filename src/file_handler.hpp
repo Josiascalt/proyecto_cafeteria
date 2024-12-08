@@ -2,16 +2,21 @@
 
 #include <fstream>
 #include <filesystem>
-#include "domain.hpp"
 
 namespace fs = std::filesystem;
 
 namespace file_handler {
+    using Size = size_t;
+
+    namespace literals {
+        std::filesystem::path operator""_p(const char* pathname, Size size);
+    } //namespace literals
+
     namespace exceptions {
         struct ValidationPathError {};
     } //namespace exceptions
 
-    using namespace catalogue::domain::literals;
+    using namespace literals;
 
     inline static fs::path CreatePathObject(const char* path_to_validate, const fs::path& parent_path = ""_p) {
         fs::path path = parent_path / fs::path(path_to_validate);
@@ -33,38 +38,41 @@ namespace file_handler {
         return path;
     }
 
-    inline static std::fstream CreateBinaryFstream(const fs::path& path) {
-        return std::fstream{path, std::ios::in | std::ios::out | std::ios::binary | std::ios::app};
-    }
+    class BinaryFile {
+    public:
+        BinaryFile(const fs::path& path);
 
-    inline static size_t CalcFileSize(std::fstream& file) {
-        auto initial_pos = file.tellg();
-        file.seekg(0, std::ios::end);
-        auto file_size = file.tellg();
-        file.seekg(initial_pos);
-        
-        return file_size;
-    }
+        template <typename T>
+        inline void Write(T* source, Size size = sizeof(T)) {
+            file_.seekp(write_pos_);
 
-    template <typename T>
-    inline static bool WriteInBinary(std::fstream& bfout /*binary-file-out*/, T* source, size_t size = sizeof(T)) {
-        if (bfout) {
-            bfout.write(reinterpret_cast<char*>(source), size);
+            if (file_) {
+                file_.write(reinterpret_cast<char*>(source), size);
+            }
+
+            size_ += size;
+            write_pos_ += size;
+            
         }
-        
-        return bfout ? true : false;
-    } 
 
-    template <typename T>
-    inline static bool ReadInBinary(std::fstream& bfin /*binary-file-in*/, T* target, size_t size = sizeof(T)) {
-        if (bfin) {
-            bfin.read(reinterpret_cast<char*>(target), size);
-        }
-        
-        return bfin ? true : false;
-    }
+        template <typename T>
+        inline void Read(T* target, Size size = sizeof(T)) {
+            file_.seekg(read_pos_);
 
-    
-    
-    
+            if (file_) {
+                file_.read(reinterpret_cast<char*>(target), size);
+            }
+
+            write_pos_ += size;
+        } 
+
+        Size GetSize() const;
+
+    private:
+        std::fstream file_;
+
+        Size size_;
+        Size write_pos_;
+        Size read_pos_;
+    };
 } //namespace file_handler
