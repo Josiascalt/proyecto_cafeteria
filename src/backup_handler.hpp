@@ -6,10 +6,9 @@
 
 #include "domain.hpp"
 #include "file_handler.hpp"
-#include "file_handler.cpp"
 
 namespace catalogue {
-    namespace data_manager {
+    namespace backup {
 
         using namespace domain::type_naming;
 
@@ -35,9 +34,9 @@ namespace catalogue {
             UserDataPaths& SetGroupsPath(fs::path groups_path);
         };
 
-        class UserDataHandler {
+        class UserDataBackup {
         public:
-            UserDataHandler(const UserDataPaths& user_data);
+            UserDataBackup(const UserDataPaths& user_data);
 
             template <typename T>
             inline void Serialize(T* user) {
@@ -85,5 +84,5 @@ namespace catalogue {
             file_handler::BinaryFile groups_;
         };
 
-    } //namespace data_manager
+    } //namespace backup
 } //namespace catalogue

@@ -2,7 +2,6 @@
 #include <deque>
 
 #include "user_catalogue.hpp"
-#include "domain.hpp"
 
 namespace catalogue {
     namespace database {
@@ -19,13 +18,31 @@ namespace catalogue {
             }
         }
 
+        bool UserCatalogue::HasUser(const UserPtr& user) const {
+            using namespace domain::components;
+            if (user) {
+                if (auto identifier = dynamic_cast<const Identifiable*>(user.get());
+                    identifier && identifier_to_user_.count(identifier -> GetIdentifier())) {
+                    return false;
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
         void UserCatalogue::AddUser(UserPtr&& user) {
             if (!user) {
                 return;
             }
 
             users_.push_back(std::move(user));
-            identifier_to_user_[users_.back() -> GetIdentifier()] = users_.size() - 1;
+            
+            if (auto identifier = dynamic_cast<Identifiable*>(users_.back().get())) {
+                identifier_to_user_[identifier -> GetIdentifier()] = users_.size() - 1;
+            }
+            
         }
 
         const UserPtr& UserCatalogue::GetUserByIdentifier(types::Identifier identifier) const {
@@ -33,6 +50,12 @@ namespace catalogue {
             auto result = identifier_to_user_.find(identifier);
             return result == identifier_to_user_.end() ? dummy_user : users_[result -> second];
         }
+
+        const std::deque<UserPtr>& UserCatalogue::GetUsers() const {
+            return users_;
+        }
+
+        
 
     } //namespace database
 } //namespace catalogue

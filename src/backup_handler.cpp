@@ -1,9 +1,9 @@
 #include <utility>
 
-#include "data_manager.hpp"
+#include "backup_handler.hpp"
 
 namespace catalogue {
-    namespace data_manager {
+    namespace backup {
 
         using namespace domain::type_naming;
 
@@ -34,7 +34,7 @@ namespace catalogue {
         }
 
         //struct UserDataPaths member functions definition
-        UserDataHandler::UserDataHandler(const UserDataPaths& user_data) 
+        UserDataBackup::UserDataBackup(const UserDataPaths& user_data) 
         : user_queue_(user_data.metadata.queue)
         , names_(user_data.names)
         , identifiers_(user_data.identifiers)
@@ -44,7 +44,7 @@ namespace catalogue {
 
         }
         
-        std::deque<UserPtr> UserDataHandler::Deserialize() {
+        std::deque<UserPtr> UserDataBackup::Deserialize() {
             std::deque<UserPtr> result;
             auto total_users = user_queue_.GetSize();
 
@@ -77,7 +77,7 @@ namespace catalogue {
             return result;
         }
 
-        UserPtr UserDataHandler::DeserializeMetadata() {
+        UserPtr UserDataBackup::DeserializeMetadata() {
             domain::compound_types::UserType user_type;
             
             user_queue_.Read(&user_type);

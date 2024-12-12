@@ -96,14 +96,14 @@ namespace catalogue {
             
             //class interface
             template <typename T>
-            struct Components {
+            struct Component {
                 typedef T Type;
                 T value;
             protected:
-                virtual ~Components() = default;
+                virtual ~Component() = default;
             };
 
-            struct Nameable : Components<types::Name> {
+            struct Nameable : Component<types::Name> {
                 void SetName(const std::string& name) {
                     encoder::ascii::EncodeDataInIterable(name.begin(), name.end(), value.begin(), value.size());
                 }
@@ -111,11 +111,11 @@ namespace catalogue {
                 std::string GetName() const {
                     return encoder::ascii::DecodeDataFromIterable(value.begin(), value.end());
                 }
-            protected:
+
                 virtual ~Nameable() = default;
             };
 
-            struct Identifiable : Components<types::Identifier> {
+            struct Identifiable : Component<types::Identifier> {
                 void SetIdentifier(const std::string& identifier) {
                     const static std::hash<std::string> hasher;
                     this -> value = hasher(identifier);
@@ -124,11 +124,11 @@ namespace catalogue {
                 Type GetIdentifier() const {
                     return value;
                 }
-            protected:
+
                 virtual ~Identifiable() = default;
             };
 
-            struct Genderable : Components<types::Gender> {
+            struct Genderable : Component<types::Gender> {
                 void SetGender(Type gender) {
                     this -> value = gender;
                 }
@@ -136,11 +136,11 @@ namespace catalogue {
                 Type GetGender() const {
                     return value;
                 }
-            protected:
+
                 virtual ~Genderable() = default;
             };
             
-            struct Groupable : Components<types::Group> {
+            struct Groupable : Component<types::Group> {
                 void SetGroup(Type group) {
                     this -> value = group;
                 }
@@ -148,7 +148,7 @@ namespace catalogue {
                 Type GetGroup() const {
                     return value;
                 }
-            protected:
+
                 virtual ~Groupable() = default;
             };
         } //namespace components 
@@ -180,7 +180,7 @@ namespace catalogue {
             };
 
             //class Interface
-            class User : public Identifiable {
+            class User {
             public:
                 virtual UserType GetUserType() = 0;
 
@@ -188,6 +188,7 @@ namespace catalogue {
             };
                 
             class Student final : public User
+                                , public Identifiable
                                 , public Nameable
                                 , public Genderable
                                 , public Groupable {
